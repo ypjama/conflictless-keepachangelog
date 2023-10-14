@@ -115,10 +115,11 @@ linters-settings:
         allow:
           - '$gostd'
           - 'github.com/xeipuuv/gojsonschema'
+          - 'gopkg.in/yaml.v3'
       tests:
         files:
           - '$test'
         allow:
-          - $gostd
+          - '$gostd'
           - 'conflictless-keepachangelog/pkg'
           - 'github.com/stretchr/testify/assert'

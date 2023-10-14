@@ -1,10 +1,13 @@
 package schema
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/xeipuuv/gojsonschema"
+	"gopkg.in/yaml.v3"
 )
 
 // Data for single changelog section and/or single change-file.
@@ -79,6 +82,8 @@ var (
 	ErrSchemaLoader = errors.New("schema loader error")
 	// ErrValidate is returned when data validation founds errors.
 	ErrValidate = errors.New("validation error")
+	// ErrYamlToJSON is returned when yaml cannot be converted to json.
+	ErrYamlToJSON = errors.New("yaml to json conversion error")
 )
 
 // ValidateJSON takes a JSON byte slice and validates it against the JSON Schema.
@@ -96,6 +101,38 @@ func ValidateJSON(json []byte) (bool, error) {
 	}
 
 	return false, wrapValidationErrors(result.Errors())
+}
+
+// ValidateYAML takes a YAML byte slice and validates it against the JSON Schema.
+func ValidateYAML(b []byte) (bool, error) {
+	json, err := yamlToJSON(b)
+	if err != nil {
+		return false, err
+	}
+
+	return ValidateJSON(json)
+}
+
+func yamlToJSON(b []byte) ([]byte, error) {
+	data := map[string]interface{}{}
+
+	// Trim space to avoid yaml parser error.
+	s := strings.TrimSpace(string(b))
+
+	// Replace tabs with spaces to avoid yaml parser error.
+	s = strings.ReplaceAll(s, "\t", "  ")
+
+	err := yaml.Unmarshal([]byte(s), &data)
+	if err != nil {
+		return []byte{}, fmt.Errorf("%w: %w", ErrYamlToJSON, err)
+	}
+
+	json, err := json.Marshal(data)
+	if err != nil {
+		return []byte{}, fmt.Errorf("%w: %w", ErrYamlToJSON, err)
+	}
+
+	return json, nil
 }
 
 func wrapValidationErrors(errSlice []gojsonschema.ResultError) error {

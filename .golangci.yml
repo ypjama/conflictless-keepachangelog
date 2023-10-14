@@ -4,6 +4,9 @@ run:
 
 linters:
   disable-all: false
+  enable-all: false
+  disable:
+    - gci # Doesn't work well with gofumpt.
   enable:
     - asasalint
     - asciicheck
@@ -29,7 +32,6 @@ linters:
     - forbidigo
     - forcetypeassert
     - funlen
-    - gci
     - ginkgolinter
     - gocheckcompilerdirectives
     - gochecknoglobals
@@ -101,5 +103,22 @@ linters:
     - wrapcheck
     - wsl
     - zerologlint
-
   fast: false
+
+linters-settings:
+  depguard:
+    rules:
+      main:
+        files:
+          - '$all'
+          - '!$test'
+        allow:
+          - '$gostd'
+          - 'github.com/xeipuuv/gojsonschema'
+      tests:
+        files:
+          - '$test'
+        allow:
+          - $gostd
+          - 'conflictless-keepachangelog/pkg'
+          - 'github.com/stretchr/testify/assert'

@@ -114,6 +114,7 @@ linters-settings:
           - '!$test'
         allow:
           - '$gostd'
+          - 'conflictless-keepachangelog/internal/pkg'
           - 'github.com/xeipuuv/gojsonschema'
           - 'gopkg.in/yaml.v3'
       tests:

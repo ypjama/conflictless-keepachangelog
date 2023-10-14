@@ -10,7 +10,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// Data for single changelog section and/or single change-file.
+// Data for single changelog section and single change-file.
 type Data struct {
 	Added      []string `json:"added"      yaml:"added"`
 	Changed    []string `json:"changed"    yaml:"changed"`
@@ -86,31 +86,40 @@ var (
 	ErrYamlToJSON = errors.New("yaml to json conversion error")
 )
 
-// ValidateJSON takes a JSON byte slice and validates it against the JSON Schema.
-func ValidateJSON(json []byte) (bool, error) {
+// ParseJSON takes a JSON byte slice and validates it against the JSON Schema.
+// It returns a Data struct if the JSON is valid.
+func ParseJSON(bytes []byte) (*Data, error) {
 	schemaLoader := gojsonschema.NewStringLoader(jsonSchema)
-	documentLoader := gojsonschema.NewBytesLoader(json)
+	documentLoader := gojsonschema.NewBytesLoader(bytes)
 
 	result, err := gojsonschema.Validate(schemaLoader, documentLoader)
 	if err != nil {
-		return false, fmt.Errorf("%w: %w", ErrSchemaLoader, err)
+		return nil, fmt.Errorf("%w: %w", ErrSchemaLoader, err)
 	}
 
 	if result.Valid() {
-		return true, nil
+		data := new(Data)
+
+		err := json.Unmarshal(bytes, data)
+		if err != nil {
+			return nil, fmt.Errorf("%w: %w", ErrSchemaLoader, err)
+		}
+
+		return data, nil
 	}
 
-	return false, wrapValidationErrors(result.Errors())
+	return nil, wrapValidationErrors(result.Errors())
 }
 
-// ValidateYAML takes a YAML byte slice and validates it against the JSON Schema.
-func ValidateYAML(b []byte) (bool, error) {
-	json, err := yamlToJSON(b)
+// ParseYAML takes a YAML byte slice and validates it against the JSON Schema.
+// It returns a Data struct if the YAML is valid.
+func ParseYAML(bytes []byte) (*Data, error) {
+	json, err := yamlToJSON(bytes)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 
-	return ValidateJSON(json)
+	return ParseJSON(json)
 }
 
 func yamlToJSON(b []byte) ([]byte, error) {
@@ -142,5 +151,5 @@ func wrapValidationErrors(errSlice []gojsonschema.ResultError) error {
 		errMsg += fmt.Sprintf("- %s\n", desc)
 	}
 
-	return fmt.Errorf("%w\n\n%s", ErrValidate, errMsg)
+	return fmt.Errorf("%w:\n\n%s", ErrValidate, errMsg)
 }

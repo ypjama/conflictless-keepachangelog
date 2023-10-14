@@ -5,6 +5,7 @@ go 1.21.3
 require (
 	github.com/stretchr/testify v1.3.0
 	github.com/xeipuuv/gojsonschema v1.2.0
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (

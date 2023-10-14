@@ -37,8 +37,8 @@ added:
 		t.Run(testCase.description, func(t *testing.T) {
 			t.Parallel()
 
-			ok, err := schema.ValidateJSON([]byte(testCase.json))
-			assert.False(t, ok)
+			data, err := schema.ParseJSON([]byte(testCase.json))
+			assert.Nil(t, data)
 			assert.Error(t, err)
 			assert.True(t, errors.Is(err, testCase.err), "expected %v, got %v", testCase.err, err)
 		})
@@ -74,8 +74,8 @@ func TestValidateJSONWhenValid(t *testing.T) {
 		t.Run(testCase.description, func(t *testing.T) {
 			t.Parallel()
 
-			ok, err := schema.ValidateJSON([]byte(testCase.json))
-			assert.True(t, ok)
+			data, err := schema.ParseJSON([]byte(testCase.json))
+			assert.NotNil(t, data)
 			assert.NoError(t, err)
 		})
 	}
@@ -121,8 +121,8 @@ changed: { foo: "bar" }
 		t.Run(testCase.description, func(t *testing.T) {
 			t.Parallel()
 
-			ok, err := schema.ValidateYAML([]byte(testCase.yaml))
-			assert.False(t, ok)
+			data, err := schema.ParseYAML([]byte(testCase.yaml))
+			assert.Nil(t, data)
 			assert.Error(t, err)
 			assert.True(t, errors.Is(err, testCase.err), "expected %v, got %v", testCase.err, err)
 		})
@@ -184,8 +184,8 @@ removed:
 		t.Run(testCase.description, func(t *testing.T) {
 			t.Parallel()
 
-			ok, err := schema.ValidateYAML([]byte(testCase.yaml))
-			assert.True(t, ok)
+			data, err := schema.ParseYAML([]byte(testCase.yaml))
+			assert.NotNil(t, data)
 			assert.NoError(t, err)
 		})
 	}

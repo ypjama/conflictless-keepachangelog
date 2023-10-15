@@ -21,26 +21,26 @@ func generate(cfg *Config) {
 
 	combined, err := scanDir(*cfg.Flags.Directory)
 	if err != nil {
-		printErrorAndExit(err.Error(), usageGenerate)
+		printErrorAndExit(err.Error(), func() {})
 	}
 
 	if combined.IsEmpty() {
-		printErrorAndExit("no changelog entries found", usageGenerate)
+		printErrorAndExit("no changelog entries found", func() {})
 	}
 
 	newSection := DataToMarkdown(cfg, combined)
 	if newSection == "" {
-		printErrorAndExit("failed to generate a new version section", usageGenerate)
+		printErrorAndExit("failed to generate a new version section", func() {})
 	}
 
 	err = cfg.Changelog.WriteSection(newSection)
 	if err != nil {
-		printErrorAndExit(err.Error(), usageGenerate)
+		printErrorAndExit(err.Error(), func() {})
 	}
 
 	err = removeChangeFiles(*cfg.Flags.Directory)
 	if err != nil {
-		printErrorAndExit(err.Error(), usageGenerate)
+		printErrorAndExit(err.Error(), func() {})
 	}
 
 	printGenerateSuccess(newSection)
@@ -61,13 +61,13 @@ func DataToMarkdown(cfg *Config, data *schema.Data) string {
 	var sectionLink string
 
 	if !cfg.Flags.SkipVersionLinks {
-		sectionLink = SectionLink("0.1.0", ParseRepositoryURL(cfg))
+		sectionLink = SectionLink(ParseRepositoryURL(cfg), sectionName)
 	}
 
 	out += fmt.Sprintf("## ["+sectionName+"] - %s%s%s", dateStr, eol, eol)
 
 	if sectionLink != "" {
-		out += fmt.Sprintf("%s%s", sectionLink, eol)
+		out += fmt.Sprintf("%s%s%s", sectionLink, eol, eol)
 	}
 
 	out += entriesToMarkdown("Added", data.Added, eol)

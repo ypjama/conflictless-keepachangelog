@@ -47,7 +47,7 @@ func CLI() {
 
 	switch cfg.Flags.Command {
 	case commandCheck:
-		printUsageAndExit(&cfg)
+		check(&cfg)
 	case commandGen:
 		generate(&cfg)
 	case commandHelp:

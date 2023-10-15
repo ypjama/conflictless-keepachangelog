@@ -34,5 +34,18 @@ func printErrorAndExit(msg string, usageFunc func()) {
 
 func printGenerateSuccess(section string) {
 	//nolint:forbidigo
-	fmt.Printf("Generated new version section successfully!\n\n```\n%s```\n", section)
+	fmt.Printf("Generated new version section successfully!\n\n```md\n%s```\n", section)
+}
+
+func printCheckSuccess(noContent bool) {
+	var msg string
+
+	if noContent {
+		msg = "No changes found!"
+	} else {
+		msg = "Change files are valid!"
+	}
+
+	//nolint:forbidigo
+	fmt.Println(msg)
 }

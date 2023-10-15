@@ -19,7 +19,7 @@ func help() {
 	case "":
 		usage()
 	default:
-		printErrorAndExit(fmt.Sprintf("unknown help topic '%s'", topic), usage)
+		printErrorAndExit(fmt.Sprintf("unknown help topic '%s'", topic), func() {})
 		os.Exit(exitCodeMisuseError)
 	}
 

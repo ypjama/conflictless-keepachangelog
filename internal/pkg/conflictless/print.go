@@ -5,12 +5,12 @@ import (
 	"os"
 )
 
-func printUsageAndExit(cfg *config) {
-	if cfg.flags.command == "" {
+func printUsageAndExit(cfg *Config) {
+	if cfg.Flags.Command == "" {
 		printErrorAndExit("", usage)
 	}
 
-	switch cfg.flags.command {
+	switch cfg.Flags.Command {
 	case commandCheck:
 		usageCheck()
 	case commandGen:
@@ -30,4 +30,9 @@ func printErrorAndExit(msg string, usageFunc func()) {
 
 	usageFunc()
 	os.Exit(exitCodeMisuseError)
+}
+
+func printGenerateSuccess(section string) {
+	//nolint:forbidigo
+	fmt.Printf("Generated new version section successfully!\n\n```\n%s```\n", section)
 }

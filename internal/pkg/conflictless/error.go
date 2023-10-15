@@ -3,6 +3,9 @@ package conflictless
 import "errors"
 
 var (
-	errDirectoryRead = errors.New("directory read error")
-	errFileRead      = errors.New("file read error")
+	errChangelogFileNotFound = errors.New("changelog file not found")
+	errChangelogWrite        = errors.New("changelog write error")
+	errDirectoryRead         = errors.New("directory read error")
+	errFileRead              = errors.New("file read error")
+	errFileRemove            = errors.New("file remove error")
 )

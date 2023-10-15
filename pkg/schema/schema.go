@@ -20,6 +20,16 @@ type Data struct {
 	Security   []string `json:"security"   yaml:"security"`
 }
 
+// IsEmpty returns true if all fields are empty.
+func (d *Data) IsEmpty() bool {
+	return len(d.Added) == 0 &&
+		len(d.Changed) == 0 &&
+		len(d.Deprecated) == 0 &&
+		len(d.Removed) == 0 &&
+		len(d.Fixed) == 0 &&
+		len(d.Security) == 0
+}
+
 // JSON Schema string for validating change-files.
 //
 // The $id urn:uuid:<uuid> is a UUIDv5 calculated with namespace "6ba7b811-9dad-11d1-80b4-00c04fd430c8" (@url)

@@ -9,15 +9,14 @@ import (
 )
 
 func generate(cfg *Config) {
-	switch *cfg.Flags.Bump {
-	case "patch":
-		cfg.Bump = BumpPatch
-	case "minor":
-		cfg.Bump = BumpMinor
-	case "major":
-		cfg.Bump = BumpMajor
-	default:
-		printErrorAndExit(fmt.Sprintf("invalid bump flag: %s", *cfg.Flags.Bump), usageGenerate)
+	err := cfg.setBumpFromFlags()
+	if err != nil {
+		printErrorAndExit(err.Error(), usageGenerate)
+	}
+
+	cfg.Changelog, err = ReadChangelog(cfg)
+	if err != nil {
+		printErrorAndExit(err.Error(), func() {})
 	}
 
 	combined, err := scanDir(*cfg.Flags.Directory)

@@ -25,7 +25,20 @@ func readChangeFiles(dir string) ([]fs.DirEntry, error) {
 		return nil, fmt.Errorf("%w. %w", errDirectoryRead, err)
 	}
 
-	return files, nil
+	changeFiles := []fs.DirEntry{}
+
+	for _, file := range files {
+		if file.IsDir() {
+			continue
+		}
+
+		ext := filepath.Ext(file.Name())
+		if ext == ".yml" || ext == ".yaml" || ext == ".json" {
+			changeFiles = append(changeFiles, file)
+		}
+	}
+
+	return changeFiles, nil
 }
 
 func scanDir(dir string) (*schema.Data, error) {
@@ -37,15 +50,6 @@ func scanDir(dir string) (*schema.Data, error) {
 	combined := new(schema.Data)
 
 	for _, file := range files {
-		if file.IsDir() {
-			continue
-		}
-
-		ext := filepath.Ext(file.Name())
-		if ext != ".yml" && ext != ".yaml" && ext != ".json" {
-			continue
-		}
-
 		filename := filepath.Join(dir, file.Name())
 
 		fileData, err := scanFile(filename)

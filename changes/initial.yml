@@ -1,0 +1,4 @@
+---
+added:
+  - CLI tool for validating YAML and JSON files containing change information
+  - CLI tool for generating version sections to CHANGELOG.md files

@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"strings"
 
+	_ "embed"
+
 	"github.com/xeipuuv/gojsonschema"
 	"gopkg.in/yaml.v3"
 )
@@ -30,62 +32,14 @@ func (d *Data) IsEmpty() bool {
 		len(d.Security) == 0
 }
 
-// JSON Schema string for validating change-files.
+// JSON Schema for validating change-files.
 //
 // The $id urn:uuid:<uuid> is a UUIDv5 calculated with namespace "6ba7b811-9dad-11d1-80b4-00c04fd430c8" (@url)
 // and name "https://github.com/ypjama/conflictless-keepachangelog".
 // `uuidgen --namespace @url --sha1 --name https://github.com/ypjama/conflictless-keepachangelog`
-const jsonSchema = `{
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "$id": "urn:uuid:de458349-5010-5bbc-90eb-64fd8fb5839a",
-  "type": "object",
-	"additionalProperties": false,
-  "properties": {
-    "added": {
-      "type": "array",
-      "minItems": 0,
-      "items": {
-        "type": "string"
-      }
-    },
-    "changed": {
-      "type": "array",
-      "minItems": 0,
-      "items": {
-        "type": "string"
-      }
-    },
-    "deprecated": {
-      "type": "array",
-      "minItems": 0,
-      "items": {
-        "type": "string"
-      }
-    },
-    "removed": {
-      "type": "array",
-      "minItems": 0,
-      "items": {
-        "type": "string"
-      }
-    },
-    "fixed": {
-      "type": "array",
-      "minItems": 0,
-      "items": {
-        "type": "string"
-      }
-    },
-    "security": {
-      "type": "array",
-      "minItems": 0,
-      "items": {
-        "type": "string"
-      }
-    }
-  },
-  "required": []
-}`
+//
+//go:embed jsonschema.json
+var jsonSchema []byte
 
 var (
 	// ErrSchemaLoader is returned when json schema cannot be loaded properly.
@@ -99,7 +53,7 @@ var (
 // ParseJSON takes a JSON byte slice and validates it against the JSON Schema.
 // It returns a Data struct if the JSON is valid.
 func ParseJSON(bytes []byte) (*Data, error) {
-	schemaLoader := gojsonschema.NewStringLoader(jsonSchema)
+	schemaLoader := gojsonschema.NewBytesLoader(jsonSchema)
 	documentLoader := gojsonschema.NewBytesLoader(bytes)
 
 	result, err := gojsonschema.Validate(schemaLoader, documentLoader)

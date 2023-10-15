@@ -96,10 +96,6 @@ func (cc *Changelog) WriteSection(section string) error {
 	latest := cc.LatestReleaseHeader()
 
 	if latest == "" {
-		if !cc.ContainsUnreleased() {
-			return writeBeforeIndex(cc, 0, section, false)
-		}
-
 		beforeIdx := len(string(cc.Bytes))
 		re := regexp.MustCompile(`(?i)##\s*\[unreleased]\s+(?:.*\n)*?##\s*\[([\d.]+)\]`)
 

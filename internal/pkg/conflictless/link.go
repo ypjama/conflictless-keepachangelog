@@ -3,6 +3,7 @@ package conflictless
 import (
 	"fmt"
 	"log"
+	"os"
 	"strings"
 )
 
@@ -20,6 +21,9 @@ func SectionLink(baseURL string, sectionName string) string {
 	}
 
 	log.Print("Unknown repository host, skipping section link generation")
+	log.Println(baseURL)
+
+	os.Exit(1)
 
 	return ""
 }

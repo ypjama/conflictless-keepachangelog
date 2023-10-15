@@ -8,4 +8,5 @@ var (
 	errDirectoryRead         = errors.New("directory read error")
 	errFileRead              = errors.New("file read error")
 	errFileRemove            = errors.New("file remove error")
+	errInvalidBumpFlag       = errors.New("invalid bump flag")
 )

@@ -34,13 +34,6 @@ func CLI() {
 	}
 	parseCLIFlags(&cfg)
 
-	var err error
-
-	cfg.Changelog, err = ReadChangelog(&cfg)
-	if err != nil {
-		printErrorAndExit(err.Error(), usage)
-	}
-
 	if cfg.Flags.Command == "" {
 		printUsageAndExit(&cfg)
 	}

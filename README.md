@@ -2,6 +2,12 @@
 
 CLI tool for generating sections to "Keep a Changelog" files without causing frustrating merge conflicts.
 
+## Installation
+
+```sh
+go install github.com/ypjama/conflictless-keepachangelog/cmd/conflictless@latest
+```
+
 ## Usage
 
 `conflictless help`

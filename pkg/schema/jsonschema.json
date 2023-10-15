@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "$id": "urn:uuid:de458349-5010-5bbc-90eb-64fd8fb5839a",
   "type": "object",
-	"additionalProperties": false,
+  "additionalProperties": false,
   "properties": {
     "added": {
       "type": "array",

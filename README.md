@@ -4,9 +4,13 @@ CLI tool for generating sections to "Keep a Changelog" files without causing fru
 
 ## Installation
 
+Install with go
+
 ```sh
 go install github.com/ypjama/conflictless-keepachangelog/cmd/conflictless@latest
 ```
+
+..or use [prebuilt binaries](https://github.com/ypjama/conflictless-keepachangelog/releases/latest).
 
 ## Usage
 

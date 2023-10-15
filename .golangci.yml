@@ -114,8 +114,8 @@ linters-settings:
           - '!$test'
         allow:
           - '$gostd'
-          - 'conflictless-keepachangelog/internal/pkg'
-          - 'conflictless-keepachangelog/pkg/schema'
+          - 'github.com/ypjama/conflictless-keepachangelog/internal/pkg'
+          - 'github.com/ypjama/conflictless-keepachangelog/pkg/schema'
           - 'github.com/xeipuuv/gojsonschema'
           - 'gopkg.in/yaml.v3'
       tests:
@@ -123,6 +123,6 @@ linters-settings:
           - '$test'
         allow:
           - '$gostd'
-          - 'conflictless-keepachangelog/internal/pkg'
-          - 'conflictless-keepachangelog/pkg'
+          - 'github.com/ypjama/conflictless-keepachangelog/internal/pkg'
+          - 'github.com/ypjama/conflictless-keepachangelog/pkg'
           - 'github.com/stretchr/testify/assert'

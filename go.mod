@@ -1,4 +1,4 @@
-module conflictless-keepachangelog
+module github.com/ypjama/conflictless-keepachangelog
 
 go 1.21.3
 

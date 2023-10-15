@@ -60,7 +60,7 @@ The flags are:
 
 ## Suggested workflow
 
-Each project should have a directory for storing unreleased changes, e.g. a directory named `changes`. In this directory developers can create _YAML_ or _JSON_ files for each merge/pull request. The filename can be freely choosen and can be derived from the branch name, e.g. `fix-broken-dependency.yml`. This way each merge/pull request would have its own `changes` file and there would not be any merge conflicts regarding the changelog.
+Each project should have a directory for storing unreleased changes, e.g. a directory named `changes`. In this directory developers can create _YAML_ or _JSON_ files for each merge/pull request. The filename can be freely chosen and can be derived from the branch name, e.g. `fix-broken-dependency.yml`. This way each merge/pull request would have its own `changes` file and there would not be any merge conflicts regarding the changelog.
 
 When it's time to do a release a maintainer of the project (or pipeline automation) can generate a new version entry to the `CHANGELOG.md` file by running `conflictless generate`.
 

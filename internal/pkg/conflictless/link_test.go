@@ -1,8 +1,9 @@
 package conflictless_test
 
 import (
-	"conflictless-keepachangelog/internal/pkg/conflictless"
 	"testing"
+
+	"github.com/ypjama/conflictless-keepachangelog/internal/pkg/conflictless"
 
 	"github.com/stretchr/testify/assert"
 )

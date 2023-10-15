@@ -1,9 +1,10 @@
 package schema_test
 
 import (
-	"conflictless-keepachangelog/pkg/schema"
 	"errors"
 	"testing"
+
+	"github.com/ypjama/conflictless-keepachangelog/pkg/schema"
 
 	"github.com/stretchr/testify/assert"
 )

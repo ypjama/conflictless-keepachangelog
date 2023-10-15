@@ -2,11 +2,12 @@ package conflictless
 
 import (
 	"bufio"
-	"conflictless-keepachangelog/pkg/schema"
 	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
+
+	"github.com/ypjama/conflictless-keepachangelog/pkg/schema"
 )
 
 func readChangeFiles(dir string) ([]fs.DirEntry, error) {

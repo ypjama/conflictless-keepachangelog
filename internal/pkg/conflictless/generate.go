@@ -2,9 +2,10 @@ package conflictless
 
 import (
 	"bytes"
-	"conflictless-keepachangelog/pkg/schema"
 	"fmt"
 	"time"
+
+	"github.com/ypjama/conflictless-keepachangelog/pkg/schema"
 )
 
 func generate(cfg *Config) {

@@ -1,21 +1,18 @@
 package conflictless
 
-type bump uint8
-
-const (
-	bumpPatch bump = iota
-	bumpMinor
-	bumpMajor
-)
-
-type flagCollection struct {
-	bump      *string
-	directory *string
-	command   string
+// FlagCollection is a collection of flags.
+type FlagCollection struct {
+	Bump             *string
+	Directory        *string
+	Command          string
+	SkipVersionLinks bool
 }
 
-type config struct {
-	flags         flagCollection
-	bump          bump
-	changelogFile string
+// Config is the configuration for the CLI.
+type Config struct {
+	Flags                FlagCollection
+	Bump                 Bump
+	ChangelogFile        string
+	RepositoryConfigFile string
+	Changelog            *Changelog
 }

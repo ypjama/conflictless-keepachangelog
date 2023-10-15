@@ -15,27 +15,37 @@ const (
 	commandCheck         = "check"
 	commandGen           = "generate"
 	commandHelp          = "help"
-	defaultBump          = bumpMinor
+	defaultBump          = BumpMinor
 	minArguments         = 2
 )
 
 func CLI() {
-	cfg := config{
-		flags: flagCollection{
-			bump:      new(string),
-			command:   "",
-			directory: new(string),
+	cfg := Config{
+		Flags: FlagCollection{
+			Bump:             new(string),
+			Command:          "",
+			Directory:        new(string),
+			SkipVersionLinks: false,
 		},
-		bump:          defaultBump,
-		changelogFile: "CHANGELOG.md",
+		Bump:                 defaultBump,
+		ChangelogFile:        "CHANGELOG.md",
+		RepositoryConfigFile: ".git/config",
+		Changelog:            nil,
 	}
 	parseCLIFlags(&cfg)
 
-	if cfg.flags.command == "" {
+	var err error
+
+	cfg.Changelog, err = ReadChangelog(&cfg)
+	if err != nil {
+		printErrorAndExit(err.Error(), usage)
+	}
+
+	if cfg.Flags.Command == "" {
 		printUsageAndExit(&cfg)
 	}
 
-	switch cfg.flags.command {
+	switch cfg.Flags.Command {
 	case commandCheck:
 		printUsageAndExit(&cfg)
 	case commandGen:
@@ -43,20 +53,20 @@ func CLI() {
 	case commandHelp:
 		help()
 	default:
-		printErrorAndExit(fmt.Sprintf("invalid command: '%s'", cfg.flags.command), usage)
+		printErrorAndExit(fmt.Sprintf("invalid command: '%s'", cfg.Flags.Command), usage)
 	}
 }
 
-func parseCLIFlags(cfg *config) {
+func parseCLIFlags(cfg *Config) {
 	flag.Usage = usage
 
 	if len(os.Args) > argIdxCommand {
-		cfg.flags.command = os.Args[argIdxCommand]
+		cfg.Flags.Command = os.Args[argIdxCommand]
 	}
 
 	var cmd *flag.FlagSet
 
-	switch cfg.flags.command {
+	switch cfg.Flags.Command {
 	case commandHelp:
 		cmd = flag.NewFlagSet(commandHelp, flag.ExitOnError)
 		cmd.Usage = usage
@@ -66,6 +76,7 @@ func parseCLIFlags(cfg *config) {
 
 		defineBumpFlags(cfg, cmd)
 		defineDirFlags(cfg, cmd)
+		defineSkipFlags(cfg, cmd)
 	case commandCheck:
 		cmd = flag.NewFlagSet(commandCheck, flag.ExitOnError)
 		cmd.Usage = usageCheck
@@ -81,16 +92,21 @@ func parseCLIFlags(cfg *config) {
 	}
 }
 
-func defineBumpFlags(cfg *config, fs *flag.FlagSet) {
+func defineBumpFlags(cfg *Config, fs *flag.FlagSet) {
 	defaultBumpStr := "minor"
 
-	fs.StringVar(cfg.flags.bump, "bump", defaultBumpStr, "")
-	fs.StringVar(cfg.flags.bump, "b", defaultBumpStr, "")
+	fs.StringVar(cfg.Flags.Bump, "bump", defaultBumpStr, "")
+	fs.StringVar(cfg.Flags.Bump, "b", defaultBumpStr, "")
 }
 
-func defineDirFlags(cfg *config, fs *flag.FlagSet) {
+func defineDirFlags(cfg *Config, fs *flag.FlagSet) {
 	defaultDir := "changes"
 
-	fs.StringVar(cfg.flags.directory, "dir", defaultDir, "")
-	fs.StringVar(cfg.flags.directory, "d", defaultDir, "")
+	fs.StringVar(cfg.Flags.Directory, "dir", defaultDir, "")
+	fs.StringVar(cfg.Flags.Directory, "d", defaultDir, "")
+}
+
+func defineSkipFlags(cfg *Config, fs *flag.FlagSet) {
+	fs.BoolVar(&cfg.Flags.SkipVersionLinks, "skip-version-links", false, "")
+	fs.BoolVar(&cfg.Flags.SkipVersionLinks, "s", false, "")
 }

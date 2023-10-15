@@ -4,52 +4,83 @@ import (
 	"bytes"
 	"conflictless-keepachangelog/pkg/schema"
 	"fmt"
-	"os"
+	"time"
 )
 
-func generate(cfg *config) {
-	switch *cfg.flags.bump {
+func generate(cfg *Config) {
+	switch *cfg.Flags.Bump {
 	case "patch":
-		cfg.bump = bumpPatch
+		cfg.Bump = BumpPatch
 	case "minor":
-		cfg.bump = bumpMinor
+		cfg.Bump = BumpMinor
 	case "major":
-		cfg.bump = bumpMajor
+		cfg.Bump = BumpMajor
 	default:
-		printErrorAndExit(fmt.Sprintf("invalid bump flag: %s", *cfg.flags.bump), usageGenerate)
+		printErrorAndExit(fmt.Sprintf("invalid bump flag: %s", *cfg.Flags.Bump), usageGenerate)
 	}
 
-	changelogData, err := os.ReadFile(cfg.changelogFile)
+	combined, err := scanDir(*cfg.Flags.Directory)
 	if err != nil {
 		printErrorAndExit(err.Error(), usageGenerate)
 	}
 
-	combined, err := scanDir(*cfg.flags.directory)
+	if combined.IsEmpty() {
+		printErrorAndExit("no changelog entries found", usageGenerate)
+	}
+
+	newSection := DataToMarkdown(cfg, combined)
+	if newSection == "" {
+		printErrorAndExit("failed to generate a new version section", usageGenerate)
+	}
+
+	err = cfg.Changelog.WriteSection(newSection)
 	if err != nil {
 		printErrorAndExit(err.Error(), usageGenerate)
 	}
 
-	fmt.Println(dataToMarkdown(&changelogData, combined))
+	err = removeChangeFiles(*cfg.Flags.Directory)
+	if err != nil {
+		printErrorAndExit(err.Error(), usageGenerate)
+	}
 
-	printUsageAndExit(cfg)
+	printGenerateSuccess(newSection)
 }
 
-func dataToMarkdown(changelogData *[]byte, data *schema.Data) string {
-	eol := getEndOfLineSequence(changelogData)
+func DataToMarkdown(cfg *Config, data *schema.Data) string {
+	if cfg.Changelog == nil {
+		return ""
+	}
+
+	eol := getEndOfLineSequence(&cfg.Changelog.Bytes)
 
 	out := ""
 
-	out += changeSectionToMarkdown("Added", data.Added, eol)
-	out += changeSectionToMarkdown("Changed", data.Changed, eol)
-	out += changeSectionToMarkdown("Deprecated", data.Deprecated, eol)
-	out += changeSectionToMarkdown("Removed", data.Removed, eol)
-	out += changeSectionToMarkdown("Fixed", data.Fixed, eol)
-	out += changeSectionToMarkdown("Security", data.Security, eol)
+	sectionName := cfg.Changelog.NextReleaseHeader(cfg.Bump)
+	dateStr := time.Now().Format("2006-01-02")
+
+	var sectionLink string
+
+	if !cfg.Flags.SkipVersionLinks {
+		sectionLink = SectionLink("0.1.0", ParseRepositoryURL(cfg))
+	}
+
+	out += fmt.Sprintf("## ["+sectionName+"] - %s%s%s", dateStr, eol, eol)
+
+	if sectionLink != "" {
+		out += fmt.Sprintf("%s%s", sectionLink, eol)
+	}
+
+	out += entriesToMarkdown("Added", data.Added, eol)
+	out += entriesToMarkdown("Changed", data.Changed, eol)
+	out += entriesToMarkdown("Deprecated", data.Deprecated, eol)
+	out += entriesToMarkdown("Removed", data.Removed, eol)
+	out += entriesToMarkdown("Fixed", data.Fixed, eol)
+	out += entriesToMarkdown("Security", data.Security, eol)
 
 	return out
 }
 
-func changeSectionToMarkdown(section string, entries []string, eol string) string {
+func entriesToMarkdown(section string, entries []string, eol string) string {
 	if len(entries) == 0 {
 		return ""
 	}

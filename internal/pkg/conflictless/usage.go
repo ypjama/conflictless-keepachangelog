@@ -3,8 +3,20 @@ package conflictless
 import "fmt"
 
 const (
-	flagDescriptionDir  = "-d, --dir       Directory where to look for change-files (default: changes)"
-	flagDescriptionBump = "-b, --bump      Bump version patch/minor/major (default: minor)"
+	flagIndentation            = "\t"
+	flagDescriptionIndentation = "\t\t"
+	flagDescriptionDir         = flagIndentation +
+		"-d, --dir\n" +
+		flagDescriptionIndentation +
+		"Directory where to look for change-files (default: changes)"
+	flagDescriptionBump = flagIndentation +
+		"-b, --bump\n" +
+		flagDescriptionIndentation +
+		"Bump version patch/minor/major (default: minor)"
+	flagDescriptionSkipVersionLinks = flagIndentation +
+		"-s, --skip-version-links\n" +
+		flagDescriptionIndentation +
+		"Skip version links in changelog file (default: false)"
 )
 
 func usage() {
@@ -28,7 +40,7 @@ func usageCheck() {
 
 The flags are:
 
-        %s
+%s
 `, flagDescriptionDir)
 }
 
@@ -38,7 +50,8 @@ func usageGenerate() {
 
 The flags are:
 
-        %s
-        %s
-`, flagDescriptionBump, flagDescriptionDir)
+%s
+%s
+%s
+`, flagDescriptionBump, flagDescriptionDir, flagDescriptionSkipVersionLinks)
 }

@@ -4,11 +4,12 @@ import (
 	"bufio"
 	"conflictless-keepachangelog/pkg/schema"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 )
 
-func scanDir(dir string) (*schema.Data, error) {
+func readChangeFiles(dir string) ([]fs.DirEntry, error) {
 	info, err := os.Stat(dir)
 	if err != nil {
 		return nil, fmt.Errorf("%w. %w", errDirectoryRead, err)
@@ -21,6 +22,15 @@ func scanDir(dir string) (*schema.Data, error) {
 	files, err := os.ReadDir(dir)
 	if err != nil {
 		return nil, fmt.Errorf("%w. %w", errDirectoryRead, err)
+	}
+
+	return files, nil
+}
+
+func scanDir(dir string) (*schema.Data, error) {
+	files, err := readChangeFiles(dir)
+	if err != nil {
+		return nil, err
 	}
 
 	combined := new(schema.Data)
@@ -61,16 +71,16 @@ func scanFile(filename string) (*schema.Data, error) {
 		return nil, fmt.Errorf("%w. %w", errFileRead, statsErr)
 	}
 
-	bytes := make([]byte, stats.Size())
+	fileBytes := make([]byte, stats.Size())
 	bufr := bufio.NewReader(file)
 
-	_, err = bufr.Read(bytes)
+	_, err = bufr.Read(fileBytes)
 	if err != nil {
 		return nil, fmt.Errorf("%w. %w", errFileRead, err)
 	}
 
 	if filepath.Ext(filename) == ".json" {
-		data, err := schema.ParseJSON(bytes)
+		data, err := schema.ParseJSON(fileBytes)
 		if err != nil {
 			return nil, fmt.Errorf("%w", err)
 		}
@@ -78,7 +88,7 @@ func scanFile(filename string) (*schema.Data, error) {
 		return data, nil
 	}
 
-	data, err := schema.ParseYAML(bytes)
+	data, err := schema.ParseYAML(fileBytes)
 	if err != nil {
 		return nil, fmt.Errorf("%w", err)
 	}
@@ -93,4 +103,22 @@ func addDataFromData(fromData, toData *schema.Data) {
 	toData.Removed = append(toData.Removed, fromData.Removed...)
 	toData.Fixed = append(toData.Fixed, fromData.Fixed...)
 	toData.Security = append(toData.Security, fromData.Security...)
+}
+
+func removeChangeFiles(dir string) error {
+	files, err := readChangeFiles(dir)
+	if err != nil {
+		return err
+	}
+
+	for _, file := range files {
+		filename := filepath.Join(dir, file.Name())
+
+		err := os.Remove(filename)
+		if err != nil {
+			return fmt.Errorf("%w. %w", errFileRemove, err)
+		}
+	}
+
+	return nil
 }

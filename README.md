@@ -2,6 +2,10 @@
 
 CLI tool for generating sections to "Keep a Changelog" files without causing frustrating merge conflicts.
 
+## Why?
+
+[Keep a changelog format](https://keepachangelog.com/en/1.1.0/) is really great for tracking changes between versions. What is not so great is having to solve merge conflicts when project has multiple merge/pull requests and each branch has additions to the `## [Unreleased]` section. This CLI tool aims to alleviate this nuisance by introducing an alternative workflow when it comes to updating the `CHANGELOG.md` file.
+
 ## Installation
 
 Install with go
@@ -73,10 +77,6 @@ The flags are:
         -d, --dir
                 Directory where to look for change-files (default: changes)
 ```
-
-## Why?
-
-[Keep a changelog format](https://keepachangelog.com/en/1.1.0/) is really great for tracking changes between versions. What is not so great is having to solve merge conflicts when project has multiple merge/pull requests and each branch has additions to the `## [Unreleased]` section. This CLI tool aims to alleviate this nuisance by introducing an alternative workflow when it comes to updating the `CHANGELOG.md` file.
 
 ## Suggested workflow
 

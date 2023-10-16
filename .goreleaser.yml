@@ -26,7 +26,6 @@ upx:
     goos:
       - darwin
       - linux
-    brute: true
 
 archives:
   - format: tar.gz
@@ -46,3 +45,14 @@ archives:
 
 changelog:
   skip: true
+
+signs:
+  - artifacts: checksum
+    args:
+      - "--batch"
+      - "-u"
+      - "{{ .Env.GPG_FINGERPRINT }}"
+      - "--output"
+      - "${signature}"
+      - "--detach-sign"
+      - "${artifact}"

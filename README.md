@@ -12,6 +12,26 @@ go install github.com/ypjama/conflictless-keepachangelog/cmd/conflictless@latest
 
 ..or use [prebuilt binaries](https://github.com/ypjama/conflictless-keepachangelog/releases/latest).
 
+### Verification
+
+Use GnuPG to verify prebuild binaries.
+
+```sh
+# Change this to match the version you downloaded.
+VERSION="x.y.z"
+
+# Import the public key from this repository.
+gpg --import 73D48E8B35873132.key
+
+# Verify that the signature is good on the checksums file.
+gpg --verify \
+        conflictless-keepachangelog_${VERSION}_checksums.txt.sig \
+        conflictless-keepachangelog_${VERSION}_checksums.txt
+
+# Compute checksums and check that they match.
+sha256sum --ignore-missing --check conflictless-keepachangelog_${VERSION}_checksums.txt
+```
+
 ## Usage
 
 `conflictless help`

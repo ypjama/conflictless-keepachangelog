@@ -17,11 +17,20 @@ jobs:
         with:
           go-version: '1.21.3'
 
+      - name: Install dependencies
+        run: |
+          go get .
+          go install github.com/t-yuki/gocover-cobertura@latest
+
       - name: Build
         run: CGO_ENABLED=0 go build -v -o conflictless cmd/conflictless/main.go
 
       - name: Test
-        run: touch c.out && go test -v ./... -coverprofile=c.out && go tool cover -func=c.out
+        run: >-
+          touch c.out
+          && go test -v ./... -coverprofile=c.out
+          && go tool cover -func=c.out
+          && gocover-cobertura < c.out > coverage.xml
 
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3

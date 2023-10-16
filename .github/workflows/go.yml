@@ -20,17 +20,14 @@ jobs:
       - name: Install dependencies
         run: |
           go get .
-          go install github.com/t-yuki/gocover-cobertura@latest
+          go install github.com/axw/gocov/gocov@latest
+          go install github.com/AlekSi/gocov-xml@latest
 
       - name: Build
         run: CGO_ENABLED=0 go build -v -o conflictless cmd/conflictless/main.go
 
       - name: Test
-        run: >-
-          touch c.out
-          && go test -v ./... -coverprofile=c.out
-          && go tool cover -func=c.out
-          && gocover-cobertura < c.out > coverage.xml
+        run: gocov test ./... | gocov-xml > coverage.xml
 
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3

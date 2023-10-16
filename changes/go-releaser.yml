@@ -1,0 +1,6 @@
+---
+added:
+  - Automatic release building with goreleaser
+  - Golangci-lint step to go workflow
+  - Codecov step to go workflow
+

@@ -19,3 +19,9 @@
 
 # Go workspace file
 go.work
+
+# Test coverage.
+coverage.xml
+
+# Gorelease output
+dist/

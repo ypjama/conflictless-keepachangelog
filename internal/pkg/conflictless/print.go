@@ -5,9 +5,10 @@ import (
 	"os"
 )
 
-func printUsageAndExit(cfg *Config) {
+// PrintUsageAndExit prints the usage and exits.
+func PrintUsageAndExit(cfg *Config) {
 	if cfg.Flags.Command == "" {
-		printErrorAndExit("", usage)
+		PrintErrorAndExit("", usage)
 	}
 
 	switch cfg.Flags.Command {
@@ -22,7 +23,8 @@ func printUsageAndExit(cfg *Config) {
 	os.Exit(exitCodeMisuseError)
 }
 
-func printErrorAndExit(msg string, usageFunc func()) {
+// PrintErrorAndExit prints an error message and exits.
+func PrintErrorAndExit(msg string, usageFunc func()) {
 	if msg != "" {
 		//nolint:forbidigo
 		fmt.Printf("Error: %s\n\n", msg)
@@ -32,12 +34,14 @@ func printErrorAndExit(msg string, usageFunc func()) {
 	os.Exit(exitCodeMisuseError)
 }
 
-func printGenerateSuccess(section string) {
+// PrintGenerateSuccess prints a success message for generate command.
+func PrintGenerateSuccess(section string) {
 	//nolint:forbidigo
 	fmt.Printf("Generated new version section successfully!\n\n```md\n%s```\n", section)
 }
 
-func printCheckSuccess(noContent bool) {
+// PrintCheckSuccess prints a success message for check command.
+func PrintCheckSuccess(noContent bool) {
 	var msg string
 
 	if noContent {

@@ -35,7 +35,7 @@ func CLI() {
 	parseCLIFlags(&cfg)
 
 	if cfg.Flags.Command == "" {
-		printUsageAndExit(&cfg)
+		PrintUsageAndExit(&cfg)
 	}
 
 	switch cfg.Flags.Command {
@@ -46,7 +46,7 @@ func CLI() {
 	case commandHelp:
 		help()
 	default:
-		printErrorAndExit(fmt.Sprintf("invalid command: '%s'", cfg.Flags.Command), usage)
+		PrintErrorAndExit(fmt.Sprintf("invalid command: '%s'", cfg.Flags.Command), usage)
 	}
 }
 

@@ -12,39 +12,39 @@ import (
 func Generate(cfg *Config) {
 	err := cfg.SetBumpFromFlags()
 	if err != nil {
-		printErrorAndExit(err.Error(), usageGenerate)
+		PrintErrorAndExit(err.Error(), usageGenerate)
 	}
 
 	cfg.Changelog, err = ReadChangelog(cfg)
 	if err != nil {
-		printErrorAndExit(err.Error(), func() {})
+		PrintErrorAndExit(err.Error(), func() {})
 	}
 
 	combined, err := scanDir(*cfg.Flags.Directory)
 	if err != nil {
-		printErrorAndExit(err.Error(), func() {})
+		PrintErrorAndExit(err.Error(), func() {})
 	}
 
 	if combined.IsEmpty() {
-		printErrorAndExit("no changelog entries found", func() {})
+		PrintErrorAndExit("no changelog entries found", func() {})
 	}
 
 	newSection := DataToMarkdown(cfg, combined)
 	if newSection == "" {
-		printErrorAndExit("failed to generate a new version section", func() {})
+		PrintErrorAndExit("failed to generate a new version section", func() {})
 	}
 
 	err = cfg.Changelog.WriteSection(newSection)
 	if err != nil {
-		printErrorAndExit(err.Error(), func() {})
+		PrintErrorAndExit(err.Error(), func() {})
 	}
 
 	err = removeChangeFiles(*cfg.Flags.Directory)
 	if err != nil {
-		printErrorAndExit(err.Error(), func() {})
+		PrintErrorAndExit(err.Error(), func() {})
 	}
 
-	printGenerateSuccess(newSection)
+	PrintGenerateSuccess(newSection)
 }
 
 func DataToMarkdown(cfg *Config, data *schema.Data) string {

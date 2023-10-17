@@ -35,16 +35,6 @@ func ReadChangelog(cfg *Config) (*Changelog, error) {
 	return changelog, nil
 }
 
-func (cc *Changelog) ContainsUnreleased() bool {
-	for _, header := range cc.ReleaseHeaders {
-		if strings.ToLower(header) == "unreleased" {
-			return true
-		}
-	}
-
-	return false
-}
-
 // LatestReleaseHeader returns the latest release header.
 func (cc *Changelog) LatestReleaseHeader() string {
 	latest := ""

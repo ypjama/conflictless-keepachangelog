@@ -19,7 +19,8 @@ type Config struct {
 	Changelog            *Changelog
 }
 
-func (cfg *Config) setBumpFromFlags() error {
+// SetBumpFromFlags sets the bump type by parsing the flag string.
+func (cfg *Config) SetBumpFromFlags() error {
 	switch *cfg.Flags.Bump {
 	case "patch":
 		cfg.Bump = BumpPatch
@@ -28,7 +29,7 @@ func (cfg *Config) setBumpFromFlags() error {
 	case "major":
 		cfg.Bump = BumpMajor
 	default:
-		return fmt.Errorf("%w: %s", errInvalidBumpFlag, *cfg.Flags.Bump)
+		return fmt.Errorf("%w: %s", ErrInvalidBumpFlag, *cfg.Flags.Bump)
 	}
 
 	return nil

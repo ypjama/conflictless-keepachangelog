@@ -13,16 +13,16 @@ import (
 func readChangeFiles(dir string) ([]fs.DirEntry, error) {
 	info, err := os.Stat(dir)
 	if err != nil {
-		return nil, fmt.Errorf("%w. %w", errDirectoryRead, err)
+		return nil, fmt.Errorf("%w. %w", ErrDirectoryRead, err)
 	}
 
 	if !info.IsDir() {
-		return nil, fmt.Errorf("%w. %s is not a directory", errDirectoryRead, dir)
+		return nil, fmt.Errorf("%w. %s is not a directory", ErrDirectoryRead, dir)
 	}
 
 	files, err := os.ReadDir(dir)
 	if err != nil {
-		return nil, fmt.Errorf("%w. %w", errDirectoryRead, err)
+		return nil, fmt.Errorf("%w. %w", ErrDirectoryRead, err)
 	}
 
 	changeFiles := []fs.DirEntry{}
@@ -66,14 +66,14 @@ func scanDir(dir string) (*schema.Data, error) {
 func scanFile(filename string) (*schema.Data, error) {
 	file, err := os.Open(filename)
 	if err != nil {
-		return nil, fmt.Errorf("%w. %w", errFileRead, err)
+		return nil, fmt.Errorf("%w. %w", ErrFileRead, err)
 	}
 
 	defer file.Close()
 
 	stats, statsErr := file.Stat()
 	if statsErr != nil {
-		return nil, fmt.Errorf("%w. %w", errFileRead, statsErr)
+		return nil, fmt.Errorf("%w. %w", ErrFileRead, statsErr)
 	}
 
 	fileBytes := make([]byte, stats.Size())
@@ -81,7 +81,7 @@ func scanFile(filename string) (*schema.Data, error) {
 
 	_, err = bufr.Read(fileBytes)
 	if err != nil {
-		return nil, fmt.Errorf("%w. %w", errFileRead, err)
+		return nil, fmt.Errorf("%w. %w", ErrFileRead, err)
 	}
 
 	if filepath.Ext(filename) == ".json" {
@@ -121,7 +121,7 @@ func removeChangeFiles(dir string) error {
 
 		err := os.Remove(filename)
 		if err != nil {
-			return fmt.Errorf("%w. %w", errFileRemove, err)
+			return fmt.Errorf("%w. %w", ErrFileRemove, err)
 		}
 	}
 

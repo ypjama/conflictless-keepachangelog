@@ -25,7 +25,7 @@ func ReadChangelog(cfg *Config) (*Changelog, error) {
 
 	data, err := os.ReadFile(cfg.ChangelogFile)
 	if err != nil {
-		return nil, fmt.Errorf("%w. %w", errChangelogFileNotFound, err)
+		return nil, fmt.Errorf("%w. %w", ErrChangelogFileNotFound, err)
 	}
 
 	changelog.Filepath = cfg.ChangelogFile
@@ -99,12 +99,12 @@ func (cc *Changelog) WriteSection(section string) error {
 
 	re, err := regexp.Compile(`##\s*\[` + latest + `\]`)
 	if err != nil {
-		return fmt.Errorf("%w. %w", errChangelogWrite, err)
+		return fmt.Errorf("%w. %w", ErrChangelogWrite, err)
 	}
 
 	idx := re.FindIndex(cc.Bytes)
 	if len(idx) < 1 {
-		return fmt.Errorf("%w - could not find section %s", errChangelogWrite, latest)
+		return fmt.Errorf("%w - could not find section %s", ErrChangelogWrite, latest)
 	}
 
 	return writeBeforeIndex(cc, idx[0], section, false)
@@ -127,7 +127,7 @@ func writeBeforeIndex(changelog *Changelog, beforeIdx int, section string, start
 
 	err := os.WriteFile(changelog.Filepath, updatedContent, fs.FileMode(writeFileMode))
 	if err != nil {
-		return fmt.Errorf("%w. %w", errChangelogWrite, err)
+		return fmt.Errorf("%w. %w", ErrChangelogWrite, err)
 	}
 
 	return nil

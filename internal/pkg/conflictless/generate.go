@@ -10,7 +10,7 @@ import (
 
 // Generate generates a new version section in the changelog.
 func Generate(cfg *Config) {
-	err := cfg.setBumpFromFlags()
+	err := cfg.SetBumpFromFlags()
 	if err != nil {
 		printErrorAndExit(err.Error(), usageGenerate)
 	}

@@ -9,7 +9,18 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestValidateJSONWhenInvalid(t *testing.T) {
+func TestIsEmpty(t *testing.T) {
+	t.Parallel()
+
+	data := new(schema.Data)
+
+	assert.True(t, data.IsEmpty())
+
+	data.Added = []string{"foo"}
+	assert.False(t, data.IsEmpty())
+}
+
+func TestParseJSONWhenInvalid(t *testing.T) {
 	t.Parallel()
 
 	type testCaseInvalid struct {
@@ -23,6 +34,7 @@ func TestValidateJSONWhenInvalid(t *testing.T) {
 		{"added includes non-string", `{"added":["foo", 123, "bar"]}`, schema.ErrValidate},
 		{"changed is object instead of array", `{"changed":{"foo":"bar"}}`, schema.ErrValidate},
 		{"not a json", `foo, bar, baz`, schema.ErrSchemaLoader},
+		{"invisible character after json", `{"added": [""] }` + string([]rune("\u200e")), schema.ErrSchemaLoader},
 		{
 			"yaml",
 			`---
@@ -46,7 +58,7 @@ added:
 	}
 }
 
-func TestValidateJSONWhenValid(t *testing.T) {
+func TestParseJSONWhenValid(t *testing.T) {
 	t.Parallel()
 
 	type testCaseValid struct {
@@ -82,7 +94,7 @@ func TestValidateJSONWhenValid(t *testing.T) {
 	}
 }
 
-func TestValidateYAMLWhenInvalid(t *testing.T) {
+func TestParseYAMLWhenInvalid(t *testing.T) {
 	t.Parallel()
 
 	type testCaseInvalid struct {
@@ -130,7 +142,7 @@ changed: { foo: "bar" }
 	}
 }
 
-func TestValidateYamlWhenValid(t *testing.T) {
+func TestParseYAMLWhenValid(t *testing.T) {
 	t.Parallel()
 
 	type testCaseValid struct {

@@ -42,7 +42,7 @@ func CLI() {
 	case commandCheck:
 		check(&cfg)
 	case commandGen:
-		generate(&cfg)
+		Generate(&cfg)
 	case commandHelp:
 		help()
 	default:

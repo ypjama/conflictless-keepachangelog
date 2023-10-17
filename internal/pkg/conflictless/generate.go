@@ -8,7 +8,8 @@ import (
 	"github.com/ypjama/conflictless-keepachangelog/pkg/schema"
 )
 
-func generate(cfg *Config) {
+// Generate generates a new version section in the changelog.
+func Generate(cfg *Config) {
 	err := cfg.setBumpFromFlags()
 	if err != nil {
 		printErrorAndExit(err.Error(), usageGenerate)

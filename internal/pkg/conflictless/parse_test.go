@@ -9,10 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDetectRepositoryURL(t *testing.T) {
-	t.Parallel()
-
-	gitConfig := `[core]
+const (
+	gitConfig = `[core]
         repositoryformatversion = 0
         filemode = true
         bare = false
@@ -26,6 +24,10 @@ func TestDetectRepositoryURL(t *testing.T) {
 [user]
         name = foobar
         email = foobar@localhost`
+)
+
+func TestDetectRepositoryURL(t *testing.T) {
+	t.Parallel()
 
 	file, err := os.CreateTemp(os.TempDir(), "gitconfig")
 	assert.NoError(t, err)

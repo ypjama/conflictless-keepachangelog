@@ -1,7 +1,7 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 
-name: Go
+name: go
 
 on:
   push:
@@ -20,7 +20,8 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.21.3'
+          cache: true
+          go-version-file: 'go.mod'
 
       - name: Install coverage tools
         run: |

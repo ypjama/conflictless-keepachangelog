@@ -1,6 +1,6 @@
 # conflictless-keepachangelog
 
-[![Go Test Status](https://github.com/ypjama/conflictless-keepachangelog/workflows/Go/badge.svg)](https://github.com/ypjama/conflictless-keepachangelog/actions/workflows/go.yml)
+[![Go Test Status](https://github.com/ypjama/conflictless-keepachangelog/workflows/go/badge.svg)](https://github.com/ypjama/conflictless-keepachangelog/actions/workflows/go.yml)
 [![codecov](https://codecov.io/gh/ypjama/conflictless-keepachangelog/graph/badge.svg?token=9Q4JK8VNPO)](https://codecov.io/gh/ypjama/conflictless-keepachangelog)
 [![GitHub release](https://img.shields.io/github/v/release/ypjama/conflictless-keepachangelog.svg)](https://github.com/ypjama/conflictless-keepachangelog/releases/latest)
 

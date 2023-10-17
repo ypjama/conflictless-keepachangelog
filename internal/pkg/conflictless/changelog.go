@@ -67,12 +67,12 @@ func (cc *Changelog) LatestReleaseHeader() string {
 func (cc *Changelog) NextReleaseHeader(bump Bump) string {
 	latest := cc.LatestReleaseHeader()
 	if latest == "" || strings.ToLower(latest) == "unreleased" {
-		return bump.initialVersion()
+		return bump.InitialVersion()
 	}
 
 	major, minor, patch := semverTagToIntegers(latest)
 	if major == 0 && minor == 0 && patch == 0 {
-		return bump.initialVersion()
+		return bump.InitialVersion()
 	}
 
 	switch bump {

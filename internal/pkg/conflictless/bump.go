@@ -9,7 +9,8 @@ const (
 	BumpMajor
 )
 
-func (b Bump) initialVersion() string {
+// InitialVersion returns the initial version for the bump type.
+func (b Bump) InitialVersion() string {
 	switch b {
 	case BumpPatch:
 		return "0.0.1"

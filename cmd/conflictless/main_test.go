@@ -18,7 +18,7 @@ func Test_main(t *testing.T) {
 		return
 	}
 
-	//nolint:gosec // this is a test package so G204 doesn't really matter here.
+	//nolint:gosec // this is a test function so G204 doesn't really matter here.
 	cmd := exec.Command(os.Args[0], "-test.run=^Test_main$")
 
 	cmd.Env = append(os.Environ(), "TEST_MAIN_CLI=1")

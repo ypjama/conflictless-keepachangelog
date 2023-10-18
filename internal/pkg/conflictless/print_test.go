@@ -2,6 +2,7 @@ package conflictless_test
 
 import (
 	"errors"
+	"net/url"
 	"os"
 	"os/exec"
 	"testing"
@@ -79,9 +80,8 @@ func TestPrintUsageAndExit(t *testing.T) {
 	}
 }
 
+//nolint:paralleltest // this test is not parallel because it modifies os.Stdout.
 func TestPrintCheckSuccess(t *testing.T) {
-	t.Parallel()
-
 	for _, testCase := range []struct {
 		description string
 		noContent   bool
@@ -94,9 +94,7 @@ func TestPrintCheckSuccess(t *testing.T) {
 		testCase := testCase
 
 		t.Run("", func(t *testing.T) {
-			t.Parallel()
-
-			file := createTempFile(t, os.TempDir(), "test-stdout")
+			file := createTempFile(t, os.TempDir(), "stdout-"+url.QueryEscape(testCase.description))
 			defer os.Remove(file.Name())
 
 			os.Stdout = file

@@ -1,0 +1,3 @@
+---
+changed:
+  - Errors are outputted to stderr instead of stdout

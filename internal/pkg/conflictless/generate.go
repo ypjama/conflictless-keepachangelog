@@ -12,7 +12,7 @@ import (
 func Generate(cfg *Config) {
 	err := cfg.SetBumpFromFlags()
 	if err != nil {
-		PrintErrorAndExit(err.Error(), usageGenerate)
+		PrintErrorAndExit(err.Error(), usageGenerateOnError)
 	}
 
 	cfg.Changelog, err = ReadChangelog(cfg)

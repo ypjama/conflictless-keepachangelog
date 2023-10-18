@@ -1,6 +1,9 @@
 package conflictless
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 const (
 	flagIndentation            = "\t"
@@ -19,9 +22,8 @@ const (
 		"Skip version links in changelog file (default: false)"
 )
 
-func usage() {
-	//nolint:forbidigo
-	fmt.Print(`Usage: conflictless <command> [flags]
+func usageText() string {
+	return `Usage: conflictless <command> [flags]
 
 The commands are:
 
@@ -31,27 +33,55 @@ The commands are:
 
 Use "conflictless help <topic>" for more information about that topic.
 
-`)
+`
+}
+
+func usageTextForGenerate() string {
+	return fmt.Sprintf(`Usage: conflictless generate [flags]
+
+The flags are:
+
+%s
+%s
+%s
+`,
+		flagDescriptionBump,
+		flagDescriptionDir,
+		flagDescriptionSkipVersionLinks,
+	)
+}
+
+func usageTextForCheck() string {
+	return fmt.Sprintf(`Usage: conflictless check [flags]
+
+The flags are:
+
+%s
+`,
+		flagDescriptionDir,
+	)
+}
+
+func usage() {
+	fmt.Fprint(os.Stdout, usageText())
+}
+
+func usageOnError() {
+	fmt.Fprint(os.Stderr, usageText())
 }
 
 func usageCheck() {
-	//nolint:forbidigo
-	fmt.Printf(`Usage: conflictless check [flags]
+	fmt.Fprint(os.Stdout, usageTextForCheck())
+}
 
-The flags are:
-
-%s
-`, flagDescriptionDir)
+func usageCheckOnError() {
+	fmt.Fprint(os.Stderr, usageTextForCheck())
 }
 
 func usageGenerate() {
-	//nolint:forbidigo
-	fmt.Printf(`Usage: conflictless generate [flags]
+	fmt.Fprint(os.Stdout, usageTextForGenerate())
+}
 
-The flags are:
-
-%s
-%s
-%s
-`, flagDescriptionBump, flagDescriptionDir, flagDescriptionSkipVersionLinks)
+func usageGenerateOnError() {
+	fmt.Fprint(os.Stderr, usageTextForGenerate())
 }

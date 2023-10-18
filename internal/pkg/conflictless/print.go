@@ -8,7 +8,7 @@ import (
 // PrintUsageAndExit prints the usage and exits.
 func PrintUsageAndExit(cfg *Config) {
 	if cfg.Flags.Command == "" {
-		PrintErrorAndExit("", usage)
+		PrintErrorAndExit("", usageOnError)
 	}
 
 	switch cfg.Flags.Command {
@@ -26,8 +26,7 @@ func PrintUsageAndExit(cfg *Config) {
 // PrintErrorAndExit prints an error message and exits.
 func PrintErrorAndExit(msg string, usageFunc func()) {
 	if msg != "" {
-		//nolint:forbidigo
-		fmt.Printf("Error: %s\n\n", msg)
+		fmt.Fprintf(os.Stderr, "Error: %s\n\n", msg)
 	}
 
 	usageFunc()

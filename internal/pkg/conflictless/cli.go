@@ -40,13 +40,13 @@ func CLI() {
 
 	switch cfg.Flags.Command {
 	case commandCheck:
-		check(&cfg)
+		Check(&cfg)
 	case commandGen:
 		Generate(&cfg)
 	case commandHelp:
 		help()
 	default:
-		PrintErrorAndExit(fmt.Sprintf("invalid command: '%s'", cfg.Flags.Command), usage)
+		PrintErrorAndExit(fmt.Sprintf("invalid command: '%s'", cfg.Flags.Command), usageOnError)
 	}
 }
 
@@ -62,17 +62,17 @@ func parseCLIFlags(cfg *Config) {
 	switch cfg.Flags.Command {
 	case commandHelp:
 		cmd = flag.NewFlagSet(commandHelp, flag.ExitOnError)
-		cmd.Usage = usage
+		cmd.Usage = usageOnError
 	case commandGen:
 		cmd = flag.NewFlagSet(commandGen, flag.ExitOnError)
-		cmd.Usage = usageGenerate
+		cmd.Usage = usageGenerateOnError
 
 		defineBumpFlags(cfg, cmd)
 		defineDirFlags(cfg, cmd)
 		defineSkipFlags(cfg, cmd)
 	case commandCheck:
 		cmd = flag.NewFlagSet(commandCheck, flag.ExitOnError)
-		cmd.Usage = usageCheck
+		cmd.Usage = usageCheckOnError
 
 		defineDirFlags(cfg, cmd)
 	}

@@ -8,42 +8,6 @@ import (
 	"github.com/ypjama/conflictless-keepachangelog/internal/pkg/conflictless"
 )
 
-const (
-	mkdirFileMode = 0o755
-	writeFileMode = 0o644
-)
-
-func writeDataToFile(t *testing.T, data []byte, file *os.File) {
-	t.Helper()
-
-	err := os.WriteFile(file.Name(), data, writeFileMode)
-	if err != nil {
-		t.Fatal(err)
-	}
-}
-
-func createFile(t *testing.T, dir, name string) *os.File {
-	t.Helper()
-
-	file, err := os.Create(dir + "/" + name)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	return file
-}
-
-func createTempFile(t *testing.T, dir, pattern string) *os.File {
-	t.Helper()
-
-	file, err := os.CreateTemp(dir, pattern)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	return file
-}
-
 func TestGenerate(t *testing.T) {
 	t.Parallel()
 
@@ -54,13 +18,13 @@ func TestGenerate(t *testing.T) {
 
 	os.TempDir()
 
-	changesFile := createFile(t, changesDir, "1-foo.json")
+	changesFile := createFile(t, changesDir, "test-generate.json")
 	defer os.Remove(changesFile.Name())
 
-	changelogFile := createTempFile(t, os.TempDir(), "CHANGELOG.md")
+	changelogFile := createTempFile(t, os.TempDir(), "test-generate-CHANGELOG.md")
 	defer os.Remove(changelogFile.Name())
 
-	gitConfigFile := createTempFile(t, os.TempDir(), ".gitconfig")
+	gitConfigFile := createTempFile(t, os.TempDir(), "test-generate.gitconfig")
 	defer os.Remove(gitConfigFile.Name())
 
 	writeDataToFile(t, []byte(`{"fixed":["foo"]}`), changesFile)

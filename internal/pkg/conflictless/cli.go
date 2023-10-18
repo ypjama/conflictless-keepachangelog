@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 )
 
 const (
@@ -50,11 +51,27 @@ func CLI() {
 	}
 }
 
+func argsWithoutTestFlags() []string {
+	args := []string{}
+
+	for _, arg := range os.Args {
+		if strings.HasPrefix(arg, "-test.") {
+			break
+		}
+
+		args = append(args, arg)
+	}
+
+	return args
+}
+
 func parseCLIFlags(cfg *Config) {
 	flag.Usage = usage
 
-	if len(os.Args) > argIdxCommand {
-		cfg.Flags.Command = os.Args[argIdxCommand]
+	args := argsWithoutTestFlags()
+
+	if len(args) > argIdxCommand {
+		cfg.Flags.Command = args[argIdxCommand]
 	}
 
 	var cmd *flag.FlagSet
@@ -78,7 +95,7 @@ func parseCLIFlags(cfg *Config) {
 	}
 
 	if cmd != nil {
-		err := cmd.Parse(os.Args[2:])
+		err := cmd.Parse(args[2:])
 		if err != nil {
 			panic(err)
 		}

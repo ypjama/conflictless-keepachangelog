@@ -7,8 +7,11 @@ import (
 
 func help() {
 	var topic string
-	if len(os.Args) > argIdxHelpTopic {
-		topic = os.Args[argIdxHelpTopic]
+
+	args := argsWithoutTestFlags()
+
+	if len(args) > argIdxHelpTopic {
+		topic = args[argIdxHelpTopic]
 	}
 
 	switch topic {

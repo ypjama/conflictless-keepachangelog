@@ -23,7 +23,6 @@ func help() {
 		usage()
 	default:
 		PrintErrorAndExit(fmt.Sprintf("unknown help topic '%s'", topic), func() {})
-		os.Exit(exitCodeMisuseError)
 	}
 
 	os.Exit(exitCodeSuccess)

@@ -56,7 +56,7 @@ func argsWithoutTestFlags() []string {
 
 	for _, arg := range os.Args {
 		if strings.HasPrefix(arg, "-test.") {
-			break
+			continue
 		}
 
 		args = append(args, arg)

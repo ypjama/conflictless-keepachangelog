@@ -53,6 +53,48 @@ func TestCLIWithoutArguments(t *testing.T) {
 	assert.Equal(t, expectedCode, exitCode, "process exited with %d, want exit status %d", expectedCode, exitCode)
 }
 
+func TestCliWithInvalidCommand(t *testing.T) {
+	t.Parallel()
+
+	if os.Getenv("TEST_CLI_WITH_INVALID_COMMAND") == "1" {
+		conflictless.CLI()
+
+		return
+	}
+
+	stdoutFile := createTempFile(t, os.TempDir(), "test-cli-with-invalid-command-stdout")
+	defer os.Remove(stdoutFile.Name())
+
+	stderrFile := createTempFile(t, os.TempDir(), "test-cli-with-invalid-command-stderr")
+	defer os.Remove(stderrFile.Name())
+
+	//nolint:gosec // this is a test package so G204 doesn't really matter here.
+	cmd := exec.Command(os.Args[0], "-test.run=^TestCliWithInvalidCommand$", "unknown")
+
+	cmd.Env = append(os.Environ(), "TEST_CLI_WITH_INVALID_COMMAND=1")
+	cmd.Stdout = stdoutFile
+	cmd.Stderr = stderrFile
+	err := cmd.Run()
+
+	assert.IsType(t, new(exec.ExitError), err)
+
+	exitErr := new(*exec.ExitError)
+	errors.As(err, exitErr)
+
+	stdoutData, err := os.ReadFile(stdoutFile.Name())
+	assert.NoError(t, err)
+	assert.Empty(t, stdoutData)
+
+	stderrData, err := os.ReadFile(stderrFile.Name())
+	assert.NoError(t, err)
+	assert.Contains(t, string(stderrData), "Error: invalid command: 'unknown'")
+
+	expectedCode := 2
+	exitCode := (*exitErr).ExitCode()
+
+	assert.Equal(t, expectedCode, exitCode, "process exited with %d, want exit status %d", expectedCode, exitCode)
+}
+
 func TestCLIHelp(t *testing.T) {
 	t.Parallel()
 

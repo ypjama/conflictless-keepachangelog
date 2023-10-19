@@ -5,7 +5,8 @@ import (
 	"os"
 )
 
-func help() {
+// Help prints the help message and exits.
+func Help() {
 	var topic string
 
 	args := argsWithoutTestFlags()

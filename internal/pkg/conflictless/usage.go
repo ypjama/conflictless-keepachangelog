@@ -8,7 +8,11 @@ import (
 const (
 	flagIndentation            = "\t"
 	flagDescriptionIndentation = "\t\t"
-	flagDescriptionDir         = flagIndentation +
+	flagDescriptionChangelog   = flagIndentation +
+		"-c, --changelog\n" +
+		flagDescriptionIndentation +
+		"Changelog file (default: CHANGELOG.md)"
+	flagDescriptionDir = flagIndentation +
 		"-d, --dir\n" +
 		flagDescriptionIndentation +
 		"Directory where to look for change-files (default: changes)"
@@ -44,8 +48,10 @@ The flags are:
 %s
 %s
 %s
+%s
 `,
 		flagDescriptionBump,
+		flagDescriptionChangelog,
 		flagDescriptionDir,
 		flagDescriptionSkipVersionLinks,
 	)

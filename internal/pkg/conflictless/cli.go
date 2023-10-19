@@ -24,6 +24,7 @@ func CLI() {
 	cfg := Config{
 		Flags: FlagCollection{
 			Bump:             new(string),
+			ChangelogFile:    new(string),
 			Command:          "",
 			Directory:        new(string),
 			SkipVersionLinks: false,
@@ -32,6 +33,7 @@ func CLI() {
 		ChangelogFile:        "CHANGELOG.md",
 		RepositoryConfigFile: ".git/config",
 		Changelog:            nil,
+		Directory:            "changes",
 	}
 	parseCLIFlags(&cfg)
 
@@ -45,7 +47,7 @@ func CLI() {
 	case commandGen:
 		Generate(&cfg)
 	case commandHelp:
-		help()
+		Help()
 	default:
 		PrintErrorAndExit(fmt.Sprintf("invalid command: '%s'", cfg.Flags.Command), usageOnError)
 	}
@@ -85,6 +87,7 @@ func parseCLIFlags(cfg *Config) {
 		cmd.Usage = usageGenerateOnError
 
 		defineBumpFlags(cfg, cmd)
+		defineChangeLogFlags(cfg, cmd)
 		defineDirFlags(cfg, cmd)
 		defineSkipFlags(cfg, cmd)
 	case commandCheck:
@@ -100,6 +103,13 @@ func parseCLIFlags(cfg *Config) {
 			panic(err)
 		}
 	}
+}
+
+func defineChangeLogFlags(cfg *Config, fs *flag.FlagSet) {
+	defaultChangelogFile := "CHANGELOG.md"
+
+	fs.StringVar(cfg.Flags.ChangelogFile, "changelog", defaultChangelogFile, "")
+	fs.StringVar(cfg.Flags.ChangelogFile, "c", defaultChangelogFile, "")
 }
 
 func defineBumpFlags(cfg *Config, fs *flag.FlagSet) {

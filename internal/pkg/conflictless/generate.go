@@ -10,7 +10,7 @@ import (
 
 // Generate generates a new version section in the changelog.
 func Generate(cfg *Config) {
-	err := cfg.SetBumpFromFlags()
+	err := cfg.SetGenerateConfigsFromFlags()
 	if err != nil {
 		PrintErrorAndExit(err.Error(), usageGenerateOnError)
 	}
@@ -20,7 +20,7 @@ func Generate(cfg *Config) {
 		PrintErrorAndExit(err.Error(), func() {})
 	}
 
-	combined, err := scanDir(*cfg.Flags.Directory)
+	combined, err := scanDir(cfg.Directory)
 	if err != nil {
 		PrintErrorAndExit(err.Error(), func() {})
 	}
@@ -39,7 +39,7 @@ func Generate(cfg *Config) {
 		PrintErrorAndExit(err.Error(), func() {})
 	}
 
-	err = removeChangeFiles(*cfg.Flags.Directory)
+	err = removeChangeFiles(cfg.Directory)
 	if err != nil {
 		PrintErrorAndExit(err.Error(), func() {})
 	}

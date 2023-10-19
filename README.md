@@ -65,6 +65,8 @@ The flags are:
 
         -b, --bump
                 Bump version patch/minor/major (default: minor)
+        -c, --changelog
+                Changelog file (default: CHANGELOG.md)
         -d, --dir
                 Directory where to look for change-files (default: changes)
         -s, --skip-version-links

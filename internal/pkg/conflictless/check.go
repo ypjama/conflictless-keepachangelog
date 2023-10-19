@@ -2,7 +2,9 @@ package conflictless
 
 // Check checks the validity of the change files.
 func Check(cfg *Config) {
-	combined, err := scanDir(*cfg.Flags.Directory)
+	cfg.SetCheckConfigsFromFlags()
+
+	combined, err := scanDir(cfg.Directory)
 	if err != nil {
 		PrintErrorAndExit(err.Error(), func() {})
 	}

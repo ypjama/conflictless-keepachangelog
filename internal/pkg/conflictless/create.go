@@ -11,7 +11,7 @@ func Create(cfg *Config) {
 
 	filename, err := ParseCurrentGitBranchAsFilename(cfg)
 	if err != nil {
-		PrintErrorAndExit(err.Error(), func() {})
+		PrintErrorAndExit(err.Error(), usageCreateOnError)
 	}
 
 	//nolint:godox

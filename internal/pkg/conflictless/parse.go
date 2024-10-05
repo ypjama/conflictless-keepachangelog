@@ -74,6 +74,7 @@ func Basename(branch string) string {
 		{`[\.\/_\\]+`, "-"},
 		{`\p{Mn}+`, ""},
 		{`[-]{2}`, "-"},
+		{`[^a-zA-Z0-9\.\-]`, ""},
 	} {
 		re := regexp.MustCompile(reg.expression)
 		branch = re.ReplaceAllString(branch, reg.replacement)

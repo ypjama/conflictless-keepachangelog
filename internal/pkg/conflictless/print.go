@@ -15,6 +15,8 @@ func PrintUsageAndExit(cfg *Config) {
 	switch cfg.Flags.Command {
 	case commandCheck:
 		usageCheck()
+	case commandCreate:
+		usageCreate()
 	case commandGen:
 		usageGenerate()
 	default:

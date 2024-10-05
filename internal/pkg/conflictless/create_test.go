@@ -1,7 +1,9 @@
 package conflictless_test
 
 import (
+	"errors"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"testing"
 
@@ -144,4 +146,50 @@ func TestCreate(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestCreateWithKanjiBranchName(t *testing.T) {
+	t.Parallel()
+
+	kanjiBranchName := "朝日"
+
+	changesDir, gitHeadFile, cfg := setupCreate(
+		t,
+		`ref: refs/heads/`+kanjiBranchName,
+		"yml",
+		"added,changed",
+		nil,
+	)
+	defer os.RemoveAll(changesDir)
+	defer os.Remove(gitHeadFile)
+
+	if os.Getenv("TEST_CREATE_WITH_KANJI") == "1" {
+		conflictless.Create(cfg)
+
+		return
+	}
+
+	stderrFile := createTempFile(t, os.TempDir(), "test-cli-create-with-invalid-flags-stderr")
+	defer os.Remove(stderrFile.Name())
+
+	//nolint:gosec // this is a test package so G204 doesn't really matter here.
+	cmd := exec.Command(os.Args[0], "-test.run=TestCreateWithKanjiBranchName")
+	cmd.Env = append(os.Environ(), "TEST_CREATE_WITH_KANJI=1")
+	cmd.Stderr = stderrFile
+	err := cmd.Run()
+
+	assert.Error(t, err)
+	assert.IsType(t, new(exec.ExitError), err)
+
+	exitErr := new(*exec.ExitError)
+	errors.As(err, exitErr)
+
+	expectedCode := 2
+	exitCode := (*exitErr).ExitCode()
+
+	assert.Equal(t, expectedCode, exitCode, "process exited with %d, want exit status %d", expectedCode, exitCode)
+
+	stderrData, err := os.ReadFile(stderrFile.Name())
+	assert.NoError(t, err)
+	assert.Contains(t, string(stderrData), conflictless.ErrFailedToParseBranch.Error())
 }

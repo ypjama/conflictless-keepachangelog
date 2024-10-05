@@ -55,6 +55,7 @@ func TestPrintUsageAndExit(t *testing.T) {
 	for _, crasher := range []string{
 		"no-cmd",
 		"check",
+		"create",
 		"generate",
 		"usage",
 	} {

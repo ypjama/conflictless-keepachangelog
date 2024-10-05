@@ -1,6 +1,9 @@
 package conflictless
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // FlagCollection is a collection of flags.
 type FlagCollection struct {
@@ -99,6 +102,7 @@ func (cfg *Config) SetChangeFileFormatFromFlags() error {
 	}
 
 	formatFlag := *cfg.Flags.ChangeFileFormat
+	formatFlag = strings.ToLower(formatFlag)
 
 	switch formatFlag {
 	case "yaml":

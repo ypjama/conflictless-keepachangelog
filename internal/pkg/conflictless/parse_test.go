@@ -95,6 +95,7 @@ func TestBasename(t *testing.T) {
 		{"underscores", "foo_bar_baz", "foo-bar-baz"},
 		{"underscores and dashes", "qux_quux-corge", "qux-quux-corge"},
 		{"umlauts to ascii", "föö-bär-båz", "foo-bar-baz"},
+		{"backwards slashes", `foo\bar\baz`, "foo-bar-baz"},
 	} {
 		t.Run(testCase.description, func(t *testing.T) {
 			t.Parallel()

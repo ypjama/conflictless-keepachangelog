@@ -71,7 +71,7 @@ func Basename(branch string) string {
 		expression  string
 		replacement string
 	}{
-		{`[\.\/_]+`, "-"},
+		{`[\.\/_\\]+`, "-"},
 		{`\p{Mn}+`, ""},
 		{`[-]{2}`, "-"},
 	} {

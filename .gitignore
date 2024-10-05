@@ -25,3 +25,6 @@ coverage.xml
 
 # Gorelease output
 dist/
+
+# VSCode configurations.
+.vscode/launch.json

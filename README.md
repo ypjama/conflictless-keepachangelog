@@ -24,7 +24,7 @@ go install github.com/ypjama/conflictless-keepachangelog/cmd/conflictless@latest
 
 Use GnuPG to verify prebuild binaries.
 
-Go to <https://github.com/ypjama/conflictless-keepachangelog/releases/latest> and
+Go to [latest release](https://github.com/ypjama/conflictless-keepachangelog/releases/latest) and
 download `*_checksums.txt` and `*_checksums.txt.sig` files as well as any binary archive you wish to verify.
 
 ```sh

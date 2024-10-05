@@ -44,9 +44,6 @@ added:
 			schema.ErrSchemaLoader,
 		},
 	} {
-		// Reinitialise testCase for parallel testing.
-		testCase := testCase
-
 		t.Run(testCase.description, func(t *testing.T) {
 			t.Parallel()
 
@@ -81,9 +78,6 @@ func TestParseJSONWhenValid(t *testing.T) {
 			}`,
 		},
 	} {
-		// Reinitialise testCase for parallel testing.
-		testCase := testCase
-
 		t.Run(testCase.description, func(t *testing.T) {
 			t.Parallel()
 
@@ -128,9 +122,6 @@ changed: { foo: "bar" }
 		{"not an yaml", `foo, bar, baz`, schema.ErrYamlToJSON},
 		{"unconvertable yaml", `added: { false: { true: foo } }`, schema.ErrYamlToJSON},
 	} {
-		// Reinitialise testCase for parallel testing.
-		testCase := testCase
-
 		t.Run(testCase.description, func(t *testing.T) {
 			t.Parallel()
 
@@ -191,9 +182,6 @@ removed:
 		},
 		{"Simple JSON", `{"added":["foo"]}`},
 	} {
-		// Reinitialise testCase for parallel testing.
-		testCase := testCase
-
 		t.Run(testCase.description, func(t *testing.T) {
 			t.Parallel()
 

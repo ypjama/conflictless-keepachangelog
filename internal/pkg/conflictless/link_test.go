@@ -45,9 +45,6 @@ func TestSectionLink(t *testing.T) {
 			"",
 		},
 	} {
-		// Reinitialise testCase for parallel testing.
-		testCase := testCase
-
 		t.Run(testCase.description, func(t *testing.T) {
 			t.Parallel()
 

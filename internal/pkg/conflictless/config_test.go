@@ -21,9 +21,6 @@ func TestSetBumpFromFlags(t *testing.T) {
 		{"minor", "minor", conflictless.BumpMinor},
 		{"major", "major", conflictless.BumpMajor},
 	} {
-		// Reinitialise testCase for parallel testing.
-		testCase := testCase
-
 		t.Run(testCase.description, func(t *testing.T) {
 			t.Parallel()
 

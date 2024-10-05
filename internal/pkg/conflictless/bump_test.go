@@ -20,9 +20,6 @@ func TestInitialVersion(t *testing.T) {
 		{"major", conflictless.BumpMajor, "1.0.0"},
 		{"unknown", conflictless.Bump(123), "0.1.0"},
 	} {
-		// Reinitialise testCase for parallel testing.
-		testCase := testCase
-
 		t.Run(testCase.description, func(t *testing.T) {
 			t.Parallel()
 

@@ -10,14 +10,23 @@ import (
 	"github.com/ypjama/conflictless-keepachangelog/pkg/schema"
 )
 
-func readChangeFiles(dir string) ([]fs.DirEntry, error) {
+func validateDir(dir string) error {
 	info, err := os.Stat(dir)
 	if err != nil {
-		return nil, fmt.Errorf("%w. %w", ErrDirectoryRead, err)
+		return fmt.Errorf("%w. %w", ErrDirectoryRead, err)
 	}
 
 	if !info.IsDir() {
-		return nil, fmt.Errorf("%w. %s is not a directory", ErrDirectoryRead, dir)
+		return fmt.Errorf("%w. %s is not a directory", ErrDirectoryRead, dir)
+	}
+
+	return nil
+}
+
+func readChangeFiles(dir string) ([]fs.DirEntry, error) {
+	err := validateDir(dir)
+	if err != nil {
+		return nil, err
 	}
 
 	files, err := os.ReadDir(dir)

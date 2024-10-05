@@ -114,9 +114,6 @@ func TestCLIHelp(t *testing.T) {
 		{"help generate", []string{"help", "generate"}, false},
 		{"help unknown", []string{"help", "unknown"}, true},
 	} {
-		// Reinitialise testCase for parallel testing.
-		testCase := testCase
-
 		t.Run(testCase.description, func(t *testing.T) {
 			t.Parallel()
 

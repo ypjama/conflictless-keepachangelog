@@ -1,6 +1,6 @@
 ---
 run:
-  go: '1.21.3'
+  go: '1.23.2'
 
 linters:
   disable-all: false
@@ -14,6 +14,7 @@ linters:
     - bodyclose
     - containedctx
     - contextcheck
+    - copyloopvar
     - cyclop
     - decorder
     - depguard
@@ -21,14 +22,13 @@ linters:
     - dupl
     - dupword
     - durationcheck
+    - err113
     - errcheck
     - errchkjson
     - errname
     - errorlint
-    - execinquery
     - exhaustive
     - exhaustruct
-    - exportloopref
     - forbidigo
     - forcetypeassert
     - funlen
@@ -42,12 +42,10 @@ linters:
     - gocyclo
     - godot
     - godox
-    - goerr113
     - gofmt
     - gofumpt
     - goheader
     - goimports
-    - gomnd
     - gomoddirectives
     - gomodguard
     - goprintffuncname
@@ -66,6 +64,7 @@ linters:
     - makezero
     - mirror
     - misspell
+    - mnd
     - musttag
     - nakedret
     - nestif

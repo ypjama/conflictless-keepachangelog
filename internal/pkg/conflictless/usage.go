@@ -68,6 +68,17 @@ The flags are:
 	)
 }
 
+func usageTextForCreate() string {
+	return fmt.Sprintf(`Usage: conflictless create [flags]
+
+The flags are:
+
+%s
+`,
+		flagDescriptionDir,
+	)
+}
+
 func usage() {
 	fmt.Fprint(os.Stdout, usageText())
 }
@@ -82,6 +93,14 @@ func usageCheck() {
 
 func usageCheckOnError() {
 	fmt.Fprint(os.Stderr, usageTextForCheck())
+}
+
+func usageCreate() {
+	fmt.Fprint(os.Stdout, usageTextForCreate())
+}
+
+func usageCreateOnError() {
+	fmt.Fprint(os.Stderr, usageTextForCreate())
 }
 
 func usageGenerate() {

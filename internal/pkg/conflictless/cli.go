@@ -14,9 +14,12 @@ const (
 	exitCodeGeneralError = 1
 	exitCodeMisuseError  = 2
 	commandCheck         = "check"
+	commandCreate        = "create"
 	commandGen           = "generate"
 	commandHelp          = "help"
 	defaultBump          = BumpMinor
+	defaultDirectory     = "changes"
+	defaultExtension     = "yml"
 	minArguments         = 2
 )
 
@@ -32,8 +35,10 @@ func CLI() {
 		Bump:                 defaultBump,
 		ChangelogFile:        "CHANGELOG.md",
 		RepositoryConfigFile: ".git/config",
+		RepositoryHeadFile:   ".git/HEAD",
 		Changelog:            nil,
-		Directory:            "changes",
+		Directory:            defaultDirectory,
+		CreateExtension:      defaultExtension,
 	}
 	parseCLIFlags(&cfg)
 
@@ -44,6 +49,8 @@ func CLI() {
 	switch cfg.Flags.Command {
 	case commandCheck:
 		Check(&cfg)
+	case commandCreate:
+		Create(&cfg)
 	case commandGen:
 		Generate(&cfg)
 	case commandHelp:
@@ -93,6 +100,11 @@ func parseCLIFlags(cfg *Config) {
 	case commandCheck:
 		cmd = flag.NewFlagSet(commandCheck, flag.ExitOnError)
 		cmd.Usage = usageCheckOnError
+
+		defineDirFlags(cfg, cmd)
+	case commandCreate:
+		cmd = flag.NewFlagSet(commandCreate, flag.ExitOnError)
+		cmd.Usage = usageCreateOnError
 
 		defineDirFlags(cfg, cmd)
 	}

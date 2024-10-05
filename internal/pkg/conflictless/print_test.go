@@ -58,9 +58,6 @@ func TestPrintUsageAndExit(t *testing.T) {
 		"generate",
 		"usage",
 	} {
-		// Reinitialise crasher for parallel testing.
-		crasher := crasher
-
 		t.Run(crasher, func(t *testing.T) {
 			t.Parallel()
 
@@ -90,9 +87,6 @@ func TestPrintCheckSuccess(t *testing.T) {
 		{"no content", true, "No changes found!\n"},
 		{"content", false, "Change files are valid!\n"},
 	} {
-		// Reinitialise testCase for parallel testing.
-		testCase := testCase
-
 		t.Run("", func(t *testing.T) {
 			file := createTempFile(t, os.TempDir(), "stdout-"+url.QueryEscape(testCase.description))
 			defer os.Remove(file.Name())

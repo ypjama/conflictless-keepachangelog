@@ -17,8 +17,10 @@ type Config struct {
 	Bump                 Bump
 	ChangelogFile        string
 	RepositoryConfigFile string
+	RepositoryHeadFile   string
 	Directory            string
 	Changelog            *Changelog
+	CreateExtension      string
 }
 
 func (cfg *Config) SetGenerateConfigsFromFlags() error {
@@ -26,6 +28,10 @@ func (cfg *Config) SetGenerateConfigsFromFlags() error {
 	cfg.SetDirectoryFromFlags()
 
 	return cfg.SetBumpFromFlags()
+}
+
+func (cfg *Config) SetCreateConfigsFromFlags() {
+	cfg.SetDirectoryFromFlags()
 }
 
 func (cfg *Config) SetCheckConfigsFromFlags() {

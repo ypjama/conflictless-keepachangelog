@@ -1,2 +1,0 @@
-added:
-  - 'New flag for "generate" command: "-c, --changelog" for overriding the default changelog file name'

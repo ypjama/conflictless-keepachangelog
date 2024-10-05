@@ -44,7 +44,7 @@ archives:
         format: zip
 
 changelog:
-  skip: true
+  disable: true
 
 signs:
   - artifacts: checksum

@@ -24,17 +24,23 @@ go install github.com/ypjama/conflictless-keepachangelog/cmd/conflictless@latest
 
 Use GnuPG to verify prebuild binaries.
 
+Go to <https://github.com/ypjama/conflictless-keepachangelog/releases/latest> and
+download `*_checksums.txt` and `*_checksums.txt.sig` files as well as any binary archive you wish to verify.
+
 ```sh
 # Change this to match the version you downloaded.
 VERSION="x.y.z"
 
 # Import the public key from this repository.
-gpg --import 73D48E8B35873132.key
+curl --silent \
+  https://raw.githubusercontent.com/ypjama/conflictless-keepachangelog/refs/heads/main/73D48E8B35873132.key \
+  | gpg --import
 
 # Verify that the signature is good on the checksums file.
+# You will get a warning about the key not being certified with a trusted signature unfortunately.
 gpg --verify \
-        conflictless-keepachangelog_${VERSION}_checksums.txt.sig \
-        conflictless-keepachangelog_${VERSION}_checksums.txt
+  conflictless-keepachangelog_${VERSION}_checksums.txt.sig \
+  conflictless-keepachangelog_${VERSION}_checksums.txt
 
 # Compute checksums and check that they match.
 sha256sum --ignore-missing --check conflictless-keepachangelog_${VERSION}_checksums.txt

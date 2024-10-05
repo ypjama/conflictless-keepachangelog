@@ -16,31 +16,27 @@ type createTestCase struct {
 	changeTypesCSV string
 	contains       []string
 	notContains    []string
+	name           *string
 }
 
 func testCasesForCreate(t *testing.T) []createTestCase {
 	t.Helper()
 
+	name := "loving-ladybird"
+
 	return []createTestCase{
 		{
 			description:    "yml_format",
+			name:           nil,
 			format:         "yml",
 			branchName:     "foo-bar-baz",
 			changeTypesCSV: "changed",
-			contains: []string{
-				"---",
-				"changed:\n  -",
-			},
-			notContains: []string{
-				"added",
-				"deprecated",
-				"removed",
-				"fixed",
-				"security",
-			},
+			contains:       []string{"---", "changed:\n  -"},
+			notContains:    []string{"added", "deprecated", "removed", "fixed", "security"},
 		},
 		{
 			description:    "yaml_format",
+			name:           nil,
 			format:         "yaml",
 			branchName:     "123-create-and-fix-stuff",
 			changeTypesCSV: "security,fixed,added",
@@ -50,14 +46,11 @@ func testCasesForCreate(t *testing.T) []createTestCase {
 				"fixed:\n  -",
 				"security:\n  -",
 			},
-			notContains: []string{
-				"changed",
-				"deprecated",
-				"removed",
-			},
+			notContains: []string{"changed", "deprecated", "removed"},
 		},
 		{
 			description:    "json_format",
+			name:           nil,
 			format:         "json",
 			branchName:     "changing-deprecating-and-removing",
 			changeTypesCSV: "changed,deprecated,removed",
@@ -68,16 +61,27 @@ func testCasesForCreate(t *testing.T) []createTestCase {
 				"\n  \"deprecated\": [\n    \"\"\n  ]",
 				"\n  \"removed\": [\n    \"\"\n  ]",
 			},
-			notContains: []string{
-				"added",
-				"fixed",
-				"security",
-			},
+			notContains: []string{"added", "fixed", "security"},
+		},
+		{
+			description:    "name_given",
+			name:           &name,
+			format:         "yml",
+			branchName:     "",
+			changeTypesCSV: "added",
+			contains:       []string{"---", "added:\n  -"},
+			notContains:    []string{"changed", "deprecated", "removed", "fixed", "security"},
 		},
 	}
 }
 
-func setupCreate(t *testing.T, headFileContents, format, changeTypesCSV string) (string, string, *conflictless.Config) {
+func setupCreate(
+	t *testing.T,
+	headFileContents,
+	format,
+	changeTypesCSV string,
+	name *string,
+) (string, string, *conflictless.Config) {
 	t.Helper()
 
 	changesDir, err := os.MkdirTemp(os.TempDir(), "changes")
@@ -91,6 +95,7 @@ func setupCreate(t *testing.T, headFileContents, format, changeTypesCSV string) 
 	cfg.Flags.ChangeTypesCsv = &changeTypesCSV
 	cfg.Flags.Directory = &changesDir
 	cfg.Flags.ChangeFileFormat = &format
+	cfg.Flags.ChangeFileName = name
 
 	return changesDir, gitHeadFile.Name(), cfg
 }
@@ -107,13 +112,19 @@ func TestCreate(t *testing.T) {
 				`ref: refs/heads/`+testCase.branchName,
 				testCase.format,
 				testCase.changeTypesCSV,
+				testCase.name,
 			)
 			defer os.RemoveAll(changesDir)
 			defer os.Remove(gitHeadFile)
 
 			conflictless.Create(cfg)
 
-			expectedName := filepath.Join(changesDir, testCase.branchName+"."+testCase.format)
+			filename := testCase.branchName + "." + testCase.format
+			if testCase.name != nil {
+				filename = *testCase.name + "." + testCase.format
+			}
+
+			expectedName := filepath.Join(changesDir, filename)
 
 			file, err := os.Stat(expectedName)
 			assert.NoError(t, err)

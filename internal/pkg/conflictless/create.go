@@ -7,15 +7,21 @@ func Create(cfg *Config) {
 		PrintErrorAndExit(err.Error(), usageCreateOnError)
 	}
 
-	filename, err := ParseCurrentGitBranchAsFilename(cfg)
-	if err != nil {
-		PrintErrorAndExit(err.Error(), usageCreateOnError)
-	}
+	if cfg.ChangeFile == "" {
+		filename, err := ParseCurrentGitBranchAsFilename(cfg)
+		if err != nil {
+			PrintErrorAndExit(err.Error(), usageCreateOnError)
+		}
 
-	cfg.ChangesFile = filename
+		cfg.ChangeFile = filename
+	} else {
+		cfg.ChangeFile += "." + cfg.ChangeFileFormat
+	}
 
 	err = createChangeFile(cfg)
 	if err != nil {
 		PrintErrorAndExit(err.Error(), usageCreateOnError)
 	}
+
+	PrintCreateSuccess(cfg)
 }

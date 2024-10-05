@@ -29,6 +29,7 @@ func CLI() {
 		Flags: FlagCollection{
 			Bump:             new(string),
 			ChangeFileFormat: new(string),
+			ChangeFileName:   new(string),
 			ChangelogFile:    new(string),
 			ChangeTypesCsv:   new(string),
 			Command:          "",
@@ -38,7 +39,7 @@ func CLI() {
 		Bump:                 defaultBump,
 		Changelog:            nil,
 		ChangelogFile:        "CHANGELOG.md",
-		ChangesFile:          "",
+		ChangeFile:           "",
 		ChangeTypesCsv:       defaultChangeTypesCSV,
 		ChangeFileFormat:     defaultChangeFileFormat,
 		Directory:            defaultDirectory,
@@ -111,7 +112,10 @@ func parseCLIFlags(cfg *Config) {
 		cmd = flag.NewFlagSet(commandCreate, flag.ExitOnError)
 		cmd.Usage = usageCreateOnError
 
+		defineFormatFlags(cfg, cmd)
+		defineCreateTypeFlags(cfg, cmd)
 		defineDirFlags(cfg, cmd)
+		defineChangeFileNameFlags(cfg, cmd)
 	}
 
 	if cmd != nil {
@@ -141,6 +145,21 @@ func defineDirFlags(cfg *Config, fs *flag.FlagSet) {
 
 	fs.StringVar(cfg.Flags.Directory, "dir", defaultDir, "")
 	fs.StringVar(cfg.Flags.Directory, "d", defaultDir, "")
+}
+
+func defineFormatFlags(cfg *Config, fs *flag.FlagSet) {
+	fs.StringVar(cfg.Flags.ChangeFileFormat, "format", defaultChangeFileFormat, "")
+	fs.StringVar(cfg.Flags.ChangeFileFormat, "f", defaultChangeFileFormat, "")
+}
+
+func defineCreateTypeFlags(cfg *Config, fs *flag.FlagSet) {
+	fs.StringVar(cfg.Flags.ChangeTypesCsv, "types", defaultChangeTypesCSV, "")
+	fs.StringVar(cfg.Flags.ChangeTypesCsv, "t", defaultChangeTypesCSV, "")
+}
+
+func defineChangeFileNameFlags(cfg *Config, fs *flag.FlagSet) {
+	fs.StringVar(cfg.Flags.ChangeFileName, "name", "", "")
+	fs.StringVar(cfg.Flags.ChangeFileName, "n", "", "")
 }
 
 func defineSkipFlags(cfg *Config, fs *flag.FlagSet) {

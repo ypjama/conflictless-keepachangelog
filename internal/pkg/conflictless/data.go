@@ -185,7 +185,7 @@ func createChangeFile(cfg *Config) error {
 		return err
 	}
 
-	name := filepath.Join(dir, cfg.ChangesFile)
+	name := filepath.Join(dir, cfg.ChangeFile)
 
 	if _, err := os.Stat(name); err == nil {
 		return fmt.Errorf("%w: %s", ErrFileAlreadyExists, name)

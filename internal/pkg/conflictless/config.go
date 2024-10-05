@@ -6,6 +6,7 @@ import "fmt"
 type FlagCollection struct {
 	Bump             *string
 	ChangeFileFormat *string
+	ChangeFileName   *string
 	ChangelogFile    *string
 	ChangeTypesCsv   *string
 	Command          string
@@ -19,7 +20,7 @@ type Config struct {
 	ChangeFileFormat     string
 	Changelog            *Changelog
 	ChangelogFile        string
-	ChangesFile          string
+	ChangeFile           string
 	ChangeTypesCsv       string
 	Directory            string
 	Flags                FlagCollection
@@ -37,6 +38,7 @@ func (cfg *Config) SetGenerateConfigsFromFlags() error {
 func (cfg *Config) SetCreateConfigsFromFlags() error {
 	cfg.SetChangeTypesFromFlags()
 	cfg.SetDirectoryFromFlags()
+	cfg.SetChangeFileFromFlags()
 
 	return cfg.SetChangeFileFormatFromFlags()
 }
@@ -82,6 +84,12 @@ func (cfg *Config) SetBumpFromFlags() error {
 func (cfg *Config) SetChangeTypesFromFlags() {
 	if cfg.Flags.ChangeTypesCsv != nil {
 		cfg.ChangeTypesCsv = *cfg.Flags.ChangeTypesCsv
+	}
+}
+
+func (cfg *Config) SetChangeFileFromFlags() {
+	if cfg.Flags.ChangeFileName != nil {
+		cfg.ChangeFile = *cfg.Flags.ChangeFileName
 	}
 }
 

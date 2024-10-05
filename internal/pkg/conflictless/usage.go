@@ -62,7 +62,6 @@ The commands are:
         help            Prints this help message
 
 Use "conflictless help <topic>" for more information about that topic.
-
 `
 }
 

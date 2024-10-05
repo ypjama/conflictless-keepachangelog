@@ -1,25 +1,21 @@
 package conflictless
 
-import (
-	"fmt"
-	"path/filepath"
-)
-
-// Create ... TODO: Write description.
+// Create creates a new change-file.
 func Create(cfg *Config) {
-	cfg.SetCreateConfigsFromFlags()
+	err := cfg.SetCreateConfigsFromFlags()
+	if err != nil {
+		PrintErrorAndExit(err.Error(), usageCreateOnError)
+	}
 
 	filename, err := ParseCurrentGitBranchAsFilename(cfg)
 	if err != nil {
 		PrintErrorAndExit(err.Error(), usageCreateOnError)
 	}
 
-	//nolint:godox
-	// TODO: finish this function before submitting a merge request.
+	cfg.ChangesFile = filename
 
-	//nolint:forbidigo
-	fmt.Println(cfg.Directory)
-
-	//nolint:forbidigo
-	fmt.Println(filepath.Join(cfg.Directory, filename))
+	err = createChangeFile(cfg)
+	if err != nil {
+		PrintErrorAndExit(err.Error(), usageCreateOnError)
+	}
 }

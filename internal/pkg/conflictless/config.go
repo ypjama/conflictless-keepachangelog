@@ -5,7 +5,9 @@ import "fmt"
 // FlagCollection is a collection of flags.
 type FlagCollection struct {
 	Bump             *string
+	ChangeFileFormat *string
 	ChangelogFile    *string
+	ChangeTypesCsv   *string
 	Command          string
 	Directory        *string
 	SkipVersionLinks bool
@@ -13,14 +15,16 @@ type FlagCollection struct {
 
 // Config is the configuration for the CLI.
 type Config struct {
-	Flags                FlagCollection
 	Bump                 Bump
+	ChangeFileFormat     string
+	Changelog            *Changelog
 	ChangelogFile        string
+	ChangesFile          string
+	ChangeTypesCsv       string
+	Directory            string
+	Flags                FlagCollection
 	RepositoryConfigFile string
 	RepositoryHeadFile   string
-	Directory            string
-	Changelog            *Changelog
-	CreateExtension      string
 }
 
 func (cfg *Config) SetGenerateConfigsFromFlags() error {
@@ -30,8 +34,11 @@ func (cfg *Config) SetGenerateConfigsFromFlags() error {
 	return cfg.SetBumpFromFlags()
 }
 
-func (cfg *Config) SetCreateConfigsFromFlags() {
+func (cfg *Config) SetCreateConfigsFromFlags() error {
+	cfg.SetChangeTypesFromFlags()
 	cfg.SetDirectoryFromFlags()
+
+	return cfg.SetChangeFileFormatFromFlags()
 }
 
 func (cfg *Config) SetCheckConfigsFromFlags() {
@@ -67,6 +74,33 @@ func (cfg *Config) SetBumpFromFlags() error {
 		cfg.Bump = BumpMajor
 	default:
 		return fmt.Errorf("%w: %s", ErrInvalidBumpFlag, bumpFlag)
+	}
+
+	return nil
+}
+
+func (cfg *Config) SetChangeTypesFromFlags() {
+	if cfg.Flags.ChangeTypesCsv != nil {
+		cfg.ChangeTypesCsv = *cfg.Flags.ChangeTypesCsv
+	}
+}
+
+func (cfg *Config) SetChangeFileFormatFromFlags() error {
+	if cfg.Flags.ChangeFileFormat == nil {
+		return nil
+	}
+
+	formatFlag := *cfg.Flags.ChangeFileFormat
+
+	switch formatFlag {
+	case "yaml":
+		cfg.ChangeFileFormat = "yaml"
+	case "yml":
+		cfg.ChangeFileFormat = "yml"
+	case "json":
+		cfg.ChangeFileFormat = "json"
+	default:
+		return fmt.Errorf("%w, %s", ErrInvalidFormatFlag, formatFlag)
 	}
 
 	return nil

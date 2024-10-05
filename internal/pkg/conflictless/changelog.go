@@ -11,7 +11,6 @@ import (
 
 const (
 	minSemverParts = 3
-	writeFileMode  = 0o644
 )
 
 type Changelog struct {

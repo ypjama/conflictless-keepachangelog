@@ -16,6 +16,10 @@ const (
 		"-d, --dir\n" +
 		flagDescriptionIndentation +
 		"Directory where to look for change-files (default: changes)"
+	flagDescriptionDirForCreate = flagIndentation +
+		"-d, --dir\n" +
+		flagDescriptionIndentation +
+		"Directory where the change-file should be created (default: changes)"
 	flagDescriptionBump = flagIndentation +
 		"-b, --bump\n" +
 		flagDescriptionIndentation +
@@ -75,7 +79,7 @@ The flags are:
 
 %s
 `,
-		flagDescriptionDir,
+		flagDescriptionDirForCreate,
 	)
 }
 

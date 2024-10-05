@@ -8,37 +8,42 @@ import (
 )
 
 const (
-	argIdxCommand        = 1
-	argIdxHelpTopic      = 2
-	exitCodeSuccess      = 0
-	exitCodeGeneralError = 1
-	exitCodeMisuseError  = 2
-	commandCheck         = "check"
-	commandCreate        = "create"
-	commandGen           = "generate"
-	commandHelp          = "help"
-	defaultBump          = BumpMinor
-	defaultDirectory     = "changes"
-	defaultExtension     = "yml"
-	minArguments         = 2
+	argIdxCommand           = 1
+	argIdxHelpTopic         = 2
+	commandCheck            = "check"
+	commandCreate           = "create"
+	commandGen              = "generate"
+	commandHelp             = "help"
+	defaultBump             = BumpMinor
+	defaultChangeFileFormat = "yml"
+	defaultChangeTypesCSV   = "changed"
+	defaultDirectory        = "changes"
+	exitCodeGeneralError    = 1
+	exitCodeMisuseError     = 2
+	exitCodeSuccess         = 0
+	minArguments            = 2
 )
 
 func CLI() {
 	cfg := Config{
 		Flags: FlagCollection{
 			Bump:             new(string),
+			ChangeFileFormat: new(string),
 			ChangelogFile:    new(string),
+			ChangeTypesCsv:   new(string),
 			Command:          "",
 			Directory:        new(string),
 			SkipVersionLinks: false,
 		},
 		Bump:                 defaultBump,
+		Changelog:            nil,
 		ChangelogFile:        "CHANGELOG.md",
+		ChangesFile:          "",
+		ChangeTypesCsv:       defaultChangeTypesCSV,
+		ChangeFileFormat:     defaultChangeFileFormat,
+		Directory:            defaultDirectory,
 		RepositoryConfigFile: ".git/config",
 		RepositoryHeadFile:   ".git/HEAD",
-		Changelog:            nil,
-		Directory:            defaultDirectory,
-		CreateExtension:      defaultExtension,
 	}
 	parseCLIFlags(&cfg)
 

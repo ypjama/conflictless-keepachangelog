@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -12,14 +13,18 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+const (
+	yamlIndent = 2
+)
+
 // Data for single changelog section and single change-file.
 type Data struct {
-	Added      []string `json:"added"      yaml:"added"`
-	Changed    []string `json:"changed"    yaml:"changed"`
-	Deprecated []string `json:"deprecated" yaml:"deprecated"`
-	Removed    []string `json:"removed"    yaml:"removed"`
-	Fixed      []string `json:"fixed"      yaml:"fixed"`
-	Security   []string `json:"security"   yaml:"security"`
+	Added      []string `json:"added,omitempty"      yaml:"added,omitempty"`
+	Changed    []string `json:"changed,omitempty"    yaml:"changed,omitempty"`
+	Deprecated []string `json:"deprecated,omitempty" yaml:"deprecated,omitempty"`
+	Removed    []string `json:"removed,omitempty"    yaml:"removed,omitempty"`
+	Fixed      []string `json:"fixed,omitempty"      yaml:"fixed,omitempty"`
+	Security   []string `json:"security,omitempty"   yaml:"security,omitempty"`
 }
 
 // IsEmpty returns true if all fields are empty.
@@ -30,6 +35,35 @@ func (d *Data) IsEmpty() bool {
 		len(d.Removed) == 0 &&
 		len(d.Fixed) == 0 &&
 		len(d.Security) == 0
+}
+
+// ToJSON returns contents of Data as pretty print JSON string.
+func (d *Data) ToJSON() (string, error) {
+	bytes, err := json.MarshalIndent(d, "", "  ")
+	if err != nil {
+		return "{}", fmt.Errorf("%w", err)
+	}
+
+	return string(bytes), nil
+}
+
+// ToYAML returns contents of Data as string which can used in a YAML file.
+func (d *Data) ToYAML() (string, error) {
+	contents := "---\n"
+
+	var buf bytes.Buffer
+
+	enc := yaml.NewEncoder(&buf)
+	enc.SetIndent(yamlIndent)
+
+	err := enc.Encode(d)
+	if err != nil {
+		return contents, fmt.Errorf("%w", err)
+	}
+
+	contents += buf.String()
+
+	return contents, nil
 }
 
 // JSON Schema for validating change-files.

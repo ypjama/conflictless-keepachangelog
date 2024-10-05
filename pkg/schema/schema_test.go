@@ -20,6 +20,49 @@ func TestIsEmpty(t *testing.T) {
 	assert.False(t, data.IsEmpty())
 }
 
+func TestToJSON(t *testing.T) {
+	t.Parallel()
+
+	data := new(schema.Data)
+
+	data.Added = []string{"foo", "bar"}
+	data.Removed = []string{"baz"}
+
+	result, err := data.ToJSON()
+
+	assert.NoError(t, err)
+	assert.NotEmpty(t, result)
+	assert.Contains(t, result, "{\n")
+	assert.Contains(t, result, "\n  \"added\": [\n    \"foo\",\n    \"bar\"\n  ]")
+	assert.Contains(t, result, "\n  \"removed\": [\n    \"baz\"\n  ]")
+	assert.Contains(t, result, "\n}")
+	assert.NotContains(t, result, "changed")
+	assert.NotContains(t, result, "deprecated")
+	assert.NotContains(t, result, "fixed")
+	assert.NotContains(t, result, "security")
+}
+
+func TestToYAML(t *testing.T) {
+	t.Parallel()
+
+	data := new(schema.Data)
+
+	data.Changed = []string{"foo"}
+	data.Security = []string{"bar", "baz"}
+
+	result, err := data.ToYAML()
+
+	assert.NoError(t, err)
+	assert.NotEmpty(t, result)
+	assert.Contains(t, result, "---\n")
+	assert.Contains(t, result, "changed:\n  - foo\n")
+	assert.Contains(t, result, "security:\n  - bar\n  - baz\n")
+	assert.NotContains(t, result, "added")
+	assert.NotContains(t, result, "deprecated")
+	assert.NotContains(t, result, "removed")
+	assert.NotContains(t, result, "fixed")
+}
+
 func TestParseJSONWhenInvalid(t *testing.T) {
 	t.Parallel()
 

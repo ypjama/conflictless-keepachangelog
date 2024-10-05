@@ -111,6 +111,7 @@ func TestCLIHelp(t *testing.T) {
 	}{
 		{"help", []string{"help"}, false},
 		{"help check", []string{"help", "check"}, false},
+		{"help create", []string{"help", "create"}, false},
 		{"help generate", []string{"help", "generate"}, false},
 		{"help unknown", []string{"help", "unknown"}, true},
 	} {
@@ -191,6 +192,63 @@ func TestCLIGenerateWithInvalidFlags(t *testing.T) {
 
 	assert.Error(t, err)
 
+	assert.IsType(t, new(exec.ExitError), err)
+
+	exitErr := new(*exec.ExitError)
+	errors.As(err, exitErr)
+
+	expectedCode := 2
+	exitCode := (*exitErr).ExitCode()
+
+	assert.Equal(t, expectedCode, exitCode, "process exited with %d, want exit status %d", expectedCode, exitCode)
+
+	stdoutData, err := os.ReadFile(stdoutFile.Name())
+	assert.NoError(t, err)
+
+	stderrData, err := os.ReadFile(stderrFile.Name())
+	assert.NoError(t, err)
+
+	assert.Empty(t, string(stdoutData))
+	assert.NotEmpty(t, string(stderrData))
+}
+
+func TestCLICreateWithInvalidFlags(t *testing.T) {
+	t.Parallel()
+
+	if os.Getenv("TEST_CLI_CREATE_INVALID_FLAGS") != "" {
+		conflictless.CLI()
+
+		return
+	}
+
+	stdoutFile := createTempFile(t, os.TempDir(), "test-cli-create-with-invalid-flags-stdout")
+	defer os.Remove(stdoutFile.Name())
+
+	stderrFile := createTempFile(t, os.TempDir(), "test-cli-create-with-invalid-flags-stderr")
+	defer os.Remove(stderrFile.Name())
+
+	//nolint:gosec // this is a test package so G204 doesn't really matter here.
+	cmd := exec.Command(
+		os.Args[0],
+		"-test.run=^TestCLICreateWithInvalidFlags$",
+		"create",
+		"--dir",
+		"jaybird",
+		"--format",
+		"xml",
+		"--types",
+		"added,changed",
+		"--name",
+		"harmless-catfish",
+	)
+
+	cmd.Stdout = stdoutFile
+	cmd.Stderr = stderrFile
+
+	cmd.Env = append(os.Environ(), "TEST_CLI_CREATE_INVALID_FLAGS=1")
+	err := cmd.Run()
+
+	assert.Error(t, err)
 	assert.IsType(t, new(exec.ExitError), err)
 
 	exitErr := new(*exec.ExitError)

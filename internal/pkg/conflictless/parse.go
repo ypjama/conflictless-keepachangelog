@@ -2,14 +2,20 @@ package conflictless
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"regexp"
 	"strings"
+
+	"golang.org/x/text/unicode/norm"
 )
 
-// ParseRepositoryURL detects the repository URL from the git config file.
-func ParseRepositoryURL(cfg *Config) string {
-	file, err := os.Open(cfg.RepositoryConfigFile)
+const (
+	minRegexMatches = 2
+)
+
+func readFile(filepath string) string {
+	file, err := os.Open(filepath)
 	if err != nil {
 		return ""
 	}
@@ -29,16 +35,61 @@ func ParseRepositoryURL(cfg *Config) string {
 		return ""
 	}
 
-	gitConfig := string(fileBytes)
+	return string(fileBytes)
+}
+
+// ParseRepositoryURL detects the repository URL from the git config file.
+func ParseRepositoryURL(cfg *Config) string {
+	gitConfig := readFile(cfg.RepositoryConfigFile)
 
 	re := regexp.MustCompile(`\[remote "origin"\][^[]+url = (.+)`)
 	matches := re.FindStringSubmatch(gitConfig)
 
-	if len(matches) > 1 {
-		return HTTPSURLFromGitRemoteOrigin(matches[1])
+	if len(matches) < minRegexMatches {
+		return ""
 	}
 
-	return ""
+	return HTTPSURLFromGitRemoteOrigin(matches[1])
+}
+
+// ParseCurrentGitBranchAsFilename parses the current git branch name from the .git/HEAD file.
+func ParseCurrentGitBranchAsFilename(cfg *Config) (string, error) {
+	headFile := readFile(cfg.RepositoryHeadFile)
+	extension := cfg.ChangeFileFormat
+
+	re := regexp.MustCompile(`ref: refs/heads/(.+)`)
+	matches := re.FindStringSubmatch(headFile)
+
+	if len(matches) < minRegexMatches {
+		return "", ErrFailedToParseBranch
+	}
+
+	nameWithoutExtention := Basename(matches[1])
+	if nameWithoutExtention == "" {
+		return "", ErrFailedToParseBranch
+	}
+
+	return fmt.Sprintf("%s.%s", nameWithoutExtention, Basename(extension)), nil
+}
+
+// Basename takes a string and converts it to valid basename.
+func Basename(branch string) string {
+	branch = norm.NFD.String(strings.TrimSpace(branch))
+
+	for _, reg := range []struct {
+		expression  string
+		replacement string
+	}{
+		{`[\.\/_\\]+`, "-"},
+		{`\p{Mn}+`, ""},
+		{`[-]{2}`, "-"},
+		{`[^a-zA-Z0-9\.\-]`, ""},
+	} {
+		re := regexp.MustCompile(reg.expression)
+		branch = re.ReplaceAllString(branch, reg.replacement)
+	}
+
+	return branch
 }
 
 // HTTPSURLFromGitRemoteOrigin converts a git remote origin URL to an HTTPS URL.

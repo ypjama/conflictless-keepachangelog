@@ -3,6 +3,7 @@ package conflictless
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 // PrintUsageAndExit prints the usage and exits.
@@ -14,6 +15,8 @@ func PrintUsageAndExit(cfg *Config) {
 	switch cfg.Flags.Command {
 	case commandCheck:
 		usageCheck()
+	case commandCreate:
+		usageCreate()
 	case commandGen:
 		usageGenerate()
 	default:
@@ -51,4 +54,9 @@ func PrintCheckSuccess(noContent bool) {
 
 	//nolint:forbidigo
 	fmt.Println(msg)
+}
+
+func PrintCreateSuccess(cfg *Config) {
+	//nolint:forbidigo
+	fmt.Printf("Created new change-file '%s' successfully!\n", filepath.Join(cfg.Directory, cfg.ChangeFile))
 }

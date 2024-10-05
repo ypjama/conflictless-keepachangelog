@@ -1,6 +1,6 @@
 module github.com/ypjama/conflictless-keepachangelog
 
-go 1.21.3
+go 1.23.2
 
 require (
 	github.com/stretchr/testify v1.3.0
@@ -13,4 +13,5 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/xeipuuv/gojsonpointer v0.0.0-20180127040702-4e3ac2762d5f // indirect
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
+	golang.org/x/text v0.19.0 // indirect
 )

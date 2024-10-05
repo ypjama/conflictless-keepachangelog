@@ -18,6 +18,8 @@ func Help() {
 	switch topic {
 	case commandCheck:
 		usageCheck()
+	case commandCreate:
+		usageCreate()
 	case commandGen:
 		usageGenerate()
 	case "":

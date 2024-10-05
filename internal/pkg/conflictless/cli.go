@@ -8,32 +8,43 @@ import (
 )
 
 const (
-	argIdxCommand        = 1
-	argIdxHelpTopic      = 2
-	exitCodeSuccess      = 0
-	exitCodeGeneralError = 1
-	exitCodeMisuseError  = 2
-	commandCheck         = "check"
-	commandGen           = "generate"
-	commandHelp          = "help"
-	defaultBump          = BumpMinor
-	minArguments         = 2
+	argIdxCommand           = 1
+	argIdxHelpTopic         = 2
+	commandCheck            = "check"
+	commandCreate           = "create"
+	commandGen              = "generate"
+	commandHelp             = "help"
+	defaultBump             = BumpMinor
+	defaultChangeFileFormat = "yml"
+	defaultChangeTypesCSV   = "changed"
+	defaultDirectory        = "changes"
+	exitCodeGeneralError    = 1
+	exitCodeMisuseError     = 2
+	exitCodeSuccess         = 0
+	minArguments            = 2
 )
 
 func CLI() {
 	cfg := Config{
 		Flags: FlagCollection{
 			Bump:             new(string),
+			ChangeFileFormat: new(string),
+			ChangeFileName:   new(string),
 			ChangelogFile:    new(string),
+			ChangeTypesCsv:   new(string),
 			Command:          "",
 			Directory:        new(string),
 			SkipVersionLinks: false,
 		},
 		Bump:                 defaultBump,
-		ChangelogFile:        "CHANGELOG.md",
-		RepositoryConfigFile: ".git/config",
 		Changelog:            nil,
-		Directory:            "changes",
+		ChangelogFile:        "CHANGELOG.md",
+		ChangeFile:           "",
+		ChangeTypesCsv:       defaultChangeTypesCSV,
+		ChangeFileFormat:     defaultChangeFileFormat,
+		Directory:            defaultDirectory,
+		RepositoryConfigFile: ".git/config",
+		RepositoryHeadFile:   ".git/HEAD",
 	}
 	parseCLIFlags(&cfg)
 
@@ -44,6 +55,8 @@ func CLI() {
 	switch cfg.Flags.Command {
 	case commandCheck:
 		Check(&cfg)
+	case commandCreate:
+		Create(&cfg)
 	case commandGen:
 		Generate(&cfg)
 	case commandHelp:
@@ -95,6 +108,14 @@ func parseCLIFlags(cfg *Config) {
 		cmd.Usage = usageCheckOnError
 
 		defineDirFlags(cfg, cmd)
+	case commandCreate:
+		cmd = flag.NewFlagSet(commandCreate, flag.ExitOnError)
+		cmd.Usage = usageCreateOnError
+
+		defineFormatFlags(cfg, cmd)
+		defineCreateTypeFlags(cfg, cmd)
+		defineDirFlags(cfg, cmd)
+		defineChangeFileNameFlags(cfg, cmd)
 	}
 
 	if cmd != nil {
@@ -124,6 +145,21 @@ func defineDirFlags(cfg *Config, fs *flag.FlagSet) {
 
 	fs.StringVar(cfg.Flags.Directory, "dir", defaultDir, "")
 	fs.StringVar(cfg.Flags.Directory, "d", defaultDir, "")
+}
+
+func defineFormatFlags(cfg *Config, fs *flag.FlagSet) {
+	fs.StringVar(cfg.Flags.ChangeFileFormat, "format", defaultChangeFileFormat, "")
+	fs.StringVar(cfg.Flags.ChangeFileFormat, "f", defaultChangeFileFormat, "")
+}
+
+func defineCreateTypeFlags(cfg *Config, fs *flag.FlagSet) {
+	fs.StringVar(cfg.Flags.ChangeTypesCsv, "types", defaultChangeTypesCSV, "")
+	fs.StringVar(cfg.Flags.ChangeTypesCsv, "t", defaultChangeTypesCSV, "")
+}
+
+func defineChangeFileNameFlags(cfg *Config, fs *flag.FlagSet) {
+	fs.StringVar(cfg.Flags.ChangeFileName, "name", "", "")
+	fs.StringVar(cfg.Flags.ChangeFileName, "n", "", "")
 }
 
 func defineSkipFlags(cfg *Config, fs *flag.FlagSet) {

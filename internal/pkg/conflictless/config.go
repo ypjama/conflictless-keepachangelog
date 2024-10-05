@@ -1,11 +1,17 @@
 package conflictless
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // FlagCollection is a collection of flags.
 type FlagCollection struct {
 	Bump             *string
+	ChangeFileFormat *string
+	ChangeFileName   *string
 	ChangelogFile    *string
+	ChangeTypesCsv   *string
 	Command          string
 	Directory        *string
 	SkipVersionLinks bool
@@ -13,12 +19,16 @@ type FlagCollection struct {
 
 // Config is the configuration for the CLI.
 type Config struct {
-	Flags                FlagCollection
 	Bump                 Bump
-	ChangelogFile        string
-	RepositoryConfigFile string
-	Directory            string
+	ChangeFileFormat     string
 	Changelog            *Changelog
+	ChangelogFile        string
+	ChangeFile           string
+	ChangeTypesCsv       string
+	Directory            string
+	Flags                FlagCollection
+	RepositoryConfigFile string
+	RepositoryHeadFile   string
 }
 
 func (cfg *Config) SetGenerateConfigsFromFlags() error {
@@ -26,6 +36,14 @@ func (cfg *Config) SetGenerateConfigsFromFlags() error {
 	cfg.SetDirectoryFromFlags()
 
 	return cfg.SetBumpFromFlags()
+}
+
+func (cfg *Config) SetCreateConfigsFromFlags() error {
+	cfg.SetChangeTypesFromFlags()
+	cfg.SetDirectoryFromFlags()
+	cfg.SetChangeFileFromFlags()
+
+	return cfg.SetChangeFileFormatFromFlags()
 }
 
 func (cfg *Config) SetCheckConfigsFromFlags() {
@@ -61,6 +79,40 @@ func (cfg *Config) SetBumpFromFlags() error {
 		cfg.Bump = BumpMajor
 	default:
 		return fmt.Errorf("%w: %s", ErrInvalidBumpFlag, bumpFlag)
+	}
+
+	return nil
+}
+
+func (cfg *Config) SetChangeTypesFromFlags() {
+	if cfg.Flags.ChangeTypesCsv != nil {
+		cfg.ChangeTypesCsv = *cfg.Flags.ChangeTypesCsv
+	}
+}
+
+func (cfg *Config) SetChangeFileFromFlags() {
+	if cfg.Flags.ChangeFileName != nil {
+		cfg.ChangeFile = *cfg.Flags.ChangeFileName
+	}
+}
+
+func (cfg *Config) SetChangeFileFormatFromFlags() error {
+	if cfg.Flags.ChangeFileFormat == nil {
+		return nil
+	}
+
+	formatFlag := *cfg.Flags.ChangeFileFormat
+	formatFlag = strings.ToLower(formatFlag)
+
+	switch formatFlag {
+	case "yaml":
+		cfg.ChangeFileFormat = "yaml"
+	case "yml":
+		cfg.ChangeFileFormat = "yml"
+	case "json":
+		cfg.ChangeFileFormat = "json"
+	default:
+		return fmt.Errorf("%w, %s", ErrInvalidFormatFlag, formatFlag)
 	}
 
 	return nil

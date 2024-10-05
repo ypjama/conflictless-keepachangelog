@@ -1,6 +1,7 @@
 package conflictless_test
 
 import (
+	"fmt"
 	"os"
 	"testing"
 
@@ -58,9 +59,6 @@ func TestHTTPSURLFromGitRemoteOrigin(t *testing.T) {
 		{"http", "http://gitlab.localhost/foo/bar.git", "https://gitlab.localhost/foo/bar"},
 		{"ssh", "git@github.com:golang/vscode-go.git", "https://github.com/golang/vscode-go"},
 	} {
-		// Reinitialise testCase for parallel testing.
-		testCase := testCase
-
 		t.Run(testCase.description, func(t *testing.T) {
 			t.Parallel()
 
@@ -75,4 +73,43 @@ func TestParseReleaseHeaders(t *testing.T) {
 
 	actual := conflictless.ParseReleaseHeaders([]byte(changelogContent))
 	assert.Equal(t, []string{"Unreleased", "1.0.1", "1.0.0", "0.2.0", "0.1.0"}, actual)
+}
+
+func TestBasename(t *testing.T) {
+	t.Parallel()
+
+	type testCase struct {
+		description string
+		input       string
+		expected    string
+	}
+
+	for _, testCase := range []testCase{
+		{"single ascii word", "foo", "foo"},
+		{"spaces around word", " foo ", "foo"},
+		{"semver", "1.0.0", "1-0-0"},
+		{"semver with v", "v1.0.0", "v1-0-0"},
+		{"release branch", "releases/1.0.0", "releases-1-0-0"},
+		{"hotfix branch", "hotfix/did-a-thing", "hotfix-did-a-thing"},
+		{"multiple-slashes", "foo/bar/-baz", "foo-bar-baz"},
+		{"underscores", "foo_bar_baz", "foo-bar-baz"},
+		{"underscores and dashes", "qux_quux-corge", "qux-quux-corge"},
+		{"umlauts to ascii", "föö-bär-båz", "foo-bar-baz"},
+		{"backwards slashes", `foo\bar\baz`, "foo-bar-baz"},
+		{"kanjis are omitted", "朝日biiru", "biiru"},
+		{"question mark is omitted", "foo-or-bar?", "foo-or-bar"},
+		{"exclamation mark is omitted", "foo-of-course!", "foo-of-course"},
+	} {
+		t.Run(testCase.description, func(t *testing.T) {
+			t.Parallel()
+
+			actual := conflictless.Basename(testCase.input)
+			assert.Equal(
+				t,
+				testCase.expected,
+				actual,
+				fmt.Sprintf("with input '%s' we got %s but we wanted %s", testCase.input, actual, testCase.expected),
+			)
+		})
+	}
 }

@@ -137,43 +137,67 @@ func parseCLIFlags(cfg *Config) {
 	}
 }
 
-func defineChangeLogFlags(cfg *Config, fs *flag.FlagSet) {
+func defineChangeLogFlags(cfg *Config, flagset *flag.FlagSet) {
 	defaultChangelogFile := "CHANGELOG.md"
 
-	fs.StringVar(cfg.Flags.ChangelogFile, "changelog", defaultChangelogFile, "")
-	fs.StringVar(cfg.Flags.ChangelogFile, "c", defaultChangelogFile, "")
+	if cfg.Flags.ChangelogFile == nil {
+		cfg.Flags.ChangelogFile = new(string)
+	}
+
+	flagset.StringVar(cfg.Flags.ChangelogFile, "changelog", defaultChangelogFile, "")
+	flagset.StringVar(cfg.Flags.ChangelogFile, "c", defaultChangelogFile, "")
 }
 
-func defineBumpFlags(cfg *Config, fs *flag.FlagSet) {
+func defineBumpFlags(cfg *Config, flagset *flag.FlagSet) {
 	defaultBumpStr := "minor"
 
-	fs.StringVar(cfg.Flags.Bump, "bump", defaultBumpStr, "")
-	fs.StringVar(cfg.Flags.Bump, "b", defaultBumpStr, "")
+	if cfg.Flags.Bump == nil {
+		cfg.Flags.Bump = new(string)
+	}
+
+	flagset.StringVar(cfg.Flags.Bump, "bump", defaultBumpStr, "")
+	flagset.StringVar(cfg.Flags.Bump, "b", defaultBumpStr, "")
 }
 
-func defineDirFlags(cfg *Config, fs *flag.FlagSet) {
+func defineDirFlags(cfg *Config, flagset *flag.FlagSet) {
 	defaultDir := "changes"
 
-	fs.StringVar(cfg.Flags.Directory, "dir", defaultDir, "")
-	fs.StringVar(cfg.Flags.Directory, "d", defaultDir, "")
+	if cfg.Flags.Directory == nil {
+		cfg.Flags.Directory = new(string)
+	}
+
+	flagset.StringVar(cfg.Flags.Directory, "dir", defaultDir, "")
+	flagset.StringVar(cfg.Flags.Directory, "d", defaultDir, "")
 }
 
-func defineFormatFlags(cfg *Config, fs *flag.FlagSet) {
-	fs.StringVar(cfg.Flags.ChangeFileFormat, "format", defaultChangeFileFormat, "")
-	fs.StringVar(cfg.Flags.ChangeFileFormat, "f", defaultChangeFileFormat, "")
+func defineFormatFlags(cfg *Config, flagset *flag.FlagSet) {
+	if cfg.Flags.ChangeFileFormat == nil {
+		cfg.Flags.ChangeFileFormat = new(string)
+	}
+
+	flagset.StringVar(cfg.Flags.ChangeFileFormat, "format", defaultChangeFileFormat, "")
+	flagset.StringVar(cfg.Flags.ChangeFileFormat, "f", defaultChangeFileFormat, "")
 }
 
-func defineCreateTypeFlags(cfg *Config, fs *flag.FlagSet) {
-	fs.StringVar(cfg.Flags.ChangeTypesCsv, "types", defaultChangeTypesCSV, "")
-	fs.StringVar(cfg.Flags.ChangeTypesCsv, "t", defaultChangeTypesCSV, "")
+func defineCreateTypeFlags(cfg *Config, flagset *flag.FlagSet) {
+	if cfg.Flags.ChangeTypesCsv == nil {
+		cfg.Flags.ChangeTypesCsv = new(string)
+	}
+
+	flagset.StringVar(cfg.Flags.ChangeTypesCsv, "types", defaultChangeTypesCSV, "")
+	flagset.StringVar(cfg.Flags.ChangeTypesCsv, "t", defaultChangeTypesCSV, "")
 }
 
-func defineChangeFileNameFlags(cfg *Config, fs *flag.FlagSet) {
-	fs.StringVar(cfg.Flags.ChangeFileName, "name", "", "")
-	fs.StringVar(cfg.Flags.ChangeFileName, "n", "", "")
+func defineChangeFileNameFlags(cfg *Config, flagset *flag.FlagSet) {
+	if cfg.Flags.ChangeFileName == nil {
+		cfg.Flags.ChangeFileName = new(string)
+	}
+
+	flagset.StringVar(cfg.Flags.ChangeFileName, "name", "", "")
+	flagset.StringVar(cfg.Flags.ChangeFileName, "n", "", "")
 }
 
-func defineSkipFlags(cfg *Config, fs *flag.FlagSet) {
-	fs.BoolVar(&cfg.Flags.SkipVersionLinks, "skip-version-links", false, "")
-	fs.BoolVar(&cfg.Flags.SkipVersionLinks, "s", false, "")
+func defineSkipFlags(cfg *Config, flagset *flag.FlagSet) {
+	flagset.BoolVar(&cfg.Flags.SkipVersionLinks, "skip-version-links", false, "")
+	flagset.BoolVar(&cfg.Flags.SkipVersionLinks, "s", false, "")
 }

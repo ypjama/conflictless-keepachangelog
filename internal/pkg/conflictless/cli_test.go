@@ -12,6 +12,114 @@ import (
 	"github.com/ypjama/conflictless-keepachangelog/internal/pkg/conflictless"
 )
 
+type parseCliFlagsTestCase struct {
+	description   string
+	argsAfterMain []string
+	expectedFlags conflictless.FlagCollection
+}
+
+//nolint:funlen
+func TestParseCLIFlags(t *testing.T) {
+	t.Parallel()
+
+	originalArgs := os.Args
+
+	dir := "directory-for-cli-parse-test"
+	bump := "major"
+	changelog := "changelog-for-cli-parse-test.md"
+	format := "json"
+	types := "added,changed,removed"
+	name := "foo-bar-baz"
+
+	for _, testCase := range []parseCliFlagsTestCase{
+		{
+			"check",
+			[]string{"check", "--dir", dir},
+			conflictless.FlagCollection{
+				Bump:             nil,
+				ChangeFileFormat: nil,
+				ChangeFileName:   nil,
+				ChangelogFile:    nil,
+				ChangeTypesCsv:   nil,
+				Command:          "check",
+				Directory:        &dir,
+				SkipVersionLinks: false,
+			},
+		},
+		{
+			"create",
+			[]string{"create", "-d", dir, "-f", format, "-t", types, "-n", name},
+			conflictless.FlagCollection{
+				Bump:             nil,
+				ChangeFileFormat: &format,
+				ChangeFileName:   &name,
+				ChangelogFile:    nil,
+				ChangeTypesCsv:   &types,
+				Command:          "create",
+				Directory:        &dir,
+				SkipVersionLinks: false,
+			},
+		},
+		{
+			"generate",
+			[]string{"generate", "-c", changelog, "-s", "-d", dir, "-b", bump},
+			conflictless.FlagCollection{
+				Bump:             &bump,
+				ChangeFileFormat: nil,
+				ChangeFileName:   nil,
+				ChangelogFile:    &changelog,
+				ChangeTypesCsv:   nil,
+				Command:          "generate",
+				Directory:        &dir,
+				SkipVersionLinks: true,
+			},
+		},
+		{
+			"help",
+			[]string{"help"},
+			conflictless.FlagCollection{
+				Bump:             nil,
+				ChangeFileFormat: nil,
+				ChangeFileName:   nil,
+				ChangelogFile:    nil,
+				ChangeTypesCsv:   nil,
+				Command:          "help",
+				Directory:        nil,
+				SkipVersionLinks: false,
+			},
+		},
+		{
+			"preview",
+			[]string{"preview", "--changelog", changelog, "--skip-version-links", "--dir", dir, "--bump", bump},
+			conflictless.FlagCollection{
+				Bump:             &bump,
+				ChangeFileFormat: nil,
+				ChangeFileName:   nil,
+				ChangelogFile:    &changelog,
+				ChangeTypesCsv:   nil,
+				Command:          "preview",
+				Directory:        &dir,
+				SkipVersionLinks: true,
+			},
+		},
+	} {
+		t.Run(testCase.description, func(t *testing.T) {
+			t.Parallel()
+
+			args := []string{"conflictless"}
+			args = append(args, testCase.argsAfterMain...)
+			os.Args = args
+
+			cfg := new(conflictless.Config)
+			conflictless.ParseCLIFlags(cfg)
+
+			os.Args = originalArgs
+
+			assert.EqualValues(t, testCase.expectedFlags, cfg.Flags)
+		})
+	}
+}
+
 func TestCLIWithoutArguments(t *testing.T) {
 	t.Parallel()
 

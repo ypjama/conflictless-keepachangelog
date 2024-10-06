@@ -50,6 +50,12 @@ func (cfg *Config) SetCheckConfigsFromFlags() {
 	cfg.SetDirectoryFromFlags()
 }
 
+func (cfg *Config) SetPreviewConfigsFromFlags() error {
+	cfg.SetDirectoryFromFlags()
+
+	return cfg.SetBumpFromFlags()
+}
+
 func (cfg *Config) SetDirectoryFromFlags() {
 	if cfg.Flags.Directory != nil {
 		cfg.Directory = *cfg.Flags.Directory
@@ -116,4 +122,29 @@ func (cfg *Config) SetChangeFileFormatFromFlags() error {
 	}
 
 	return nil
+}
+
+func (cfg *Config) GenerateNewSection() string {
+	var err error
+
+	cfg.Changelog, err = ReadChangelog(cfg)
+	if err != nil {
+		PrintErrorAndExit(err.Error(), func() {})
+	}
+
+	combined, err := scanDir(cfg.Directory)
+	if err != nil {
+		PrintErrorAndExit(err.Error(), func() {})
+	}
+
+	if combined.IsEmpty() {
+		PrintErrorAndExit("no changelog entries found", func() {})
+	}
+
+	newSection := DataToMarkdown(cfg, combined)
+	if newSection == "" {
+		PrintErrorAndExit("failed to generate a new version section", func() {})
+	}
+
+	return newSection
 }

@@ -15,24 +15,7 @@ func Generate(cfg *Config) {
 		PrintErrorAndExit(err.Error(), usageGenerateOnError)
 	}
 
-	cfg.Changelog, err = ReadChangelog(cfg)
-	if err != nil {
-		PrintErrorAndExit(err.Error(), func() {})
-	}
-
-	combined, err := scanDir(cfg.Directory)
-	if err != nil {
-		PrintErrorAndExit(err.Error(), func() {})
-	}
-
-	if combined.IsEmpty() {
-		PrintErrorAndExit("no changelog entries found", func() {})
-	}
-
-	newSection := DataToMarkdown(cfg, combined)
-	if newSection == "" {
-		PrintErrorAndExit("failed to generate a new version section", func() {})
-	}
+	newSection := cfg.GenerateNewSection()
 
 	err = cfg.Changelog.WriteSection(newSection)
 	if err != nil {

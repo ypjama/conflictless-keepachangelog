@@ -22,6 +22,8 @@ func Help() {
 		usageCreate()
 	case commandGen:
 		usageGenerate()
+	case commandPreview:
+		usagePreview()
 	case "":
 		usage()
 	default:

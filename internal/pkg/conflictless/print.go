@@ -60,3 +60,8 @@ func PrintCreateSuccess(cfg *Config) {
 	//nolint:forbidigo
 	fmt.Printf("Created new change-file '%s' successfully!\n", filepath.Join(cfg.Directory, cfg.ChangeFile))
 }
+
+func PrintPreviewSuccess(section string) {
+	//nolint:forbidigo
+	fmt.Printf("```md\n%s```\n", section)
+}

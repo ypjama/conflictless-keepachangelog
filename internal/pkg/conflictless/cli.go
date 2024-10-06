@@ -14,6 +14,7 @@ const (
 	commandCreate           = "create"
 	commandGen              = "generate"
 	commandHelp             = "help"
+	commandPreview          = "preview"
 	defaultBump             = BumpMinor
 	defaultChangeFileFormat = "yml"
 	defaultChangeTypesCSV   = "changed"
@@ -59,6 +60,8 @@ func CLI() {
 		Create(&cfg)
 	case commandGen:
 		Generate(&cfg)
+	case commandPreview:
+		Preview(&cfg)
 	case commandHelp:
 		Help()
 	default:
@@ -116,6 +119,13 @@ func parseCLIFlags(cfg *Config) {
 		defineCreateTypeFlags(cfg, cmd)
 		defineDirFlags(cfg, cmd)
 		defineChangeFileNameFlags(cfg, cmd)
+	case commandPreview:
+		cmd = flag.NewFlagSet(commandPreview, flag.ExitOnError)
+		cmd.Usage = usagePreviewOnError
+
+		defineBumpFlags(cfg, cmd)
+		defineDirFlags(cfg, cmd)
+		defineSkipFlags(cfg, cmd)
 	}
 
 	if cmd != nil {

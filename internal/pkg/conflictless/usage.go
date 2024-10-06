@@ -119,8 +119,10 @@ The flags are:
 %s
 %s
 %s
+%s
 `,
 		flagDescriptionBump,
+		flagDescriptionChangelog,
 		flagDescriptionDir,
 		flagDescriptionSkipVersionLinks,
 	)

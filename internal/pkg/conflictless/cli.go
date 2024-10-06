@@ -124,6 +124,7 @@ func parseCLIFlags(cfg *Config) {
 		cmd.Usage = usagePreviewOnError
 
 		defineBumpFlags(cfg, cmd)
+		defineChangeLogFlags(cfg, cmd)
 		defineDirFlags(cfg, cmd)
 		defineSkipFlags(cfg, cmd)
 	}

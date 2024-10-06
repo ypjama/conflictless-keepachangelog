@@ -83,7 +83,7 @@ func stopStdoutCapture(t *testing.T) string {
 	t.Helper()
 
 	if stdoutCapture == nil {
-		t.Errorf("could not stop stdout capture because stdout capture wasn't initialized")
+		t.Fatal("could not stop stdout capture because stdout capture wasn't initialized")
 	}
 
 	stdoutCapture.write.Close()

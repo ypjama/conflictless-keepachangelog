@@ -51,6 +51,7 @@ func (cfg *Config) SetCheckConfigsFromFlags() {
 }
 
 func (cfg *Config) SetPreviewConfigsFromFlags() error {
+	cfg.SetChangelogFileFromFlags()
 	cfg.SetDirectoryFromFlags()
 
 	return cfg.SetBumpFromFlags()

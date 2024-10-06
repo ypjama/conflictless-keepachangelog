@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -268,4 +269,65 @@ func TestCLICreateWithInvalidFlags(t *testing.T) {
 
 	assert.Empty(t, string(stdoutData))
 	assert.NotEmpty(t, string(stderrData))
+}
+
+func TestCliPreview(t *testing.T) {
+	t.Parallel()
+
+	if os.Getenv("TEST_CLI_PREVIEW") != "" {
+		conflictless.CLI()
+
+		return
+	}
+
+	tmpDir := filepath.Join(os.TempDir(), "conflictless-cli-preview-test")
+	changesDir := filepath.Join(tmpDir, "changes-test")
+
+	err := os.MkdirAll(changesDir, mkdirFileMode)
+	assert.NoError(t, err)
+	changelogFile := createFile(t, tmpDir, "test-cli-preview-CHANGELOG.md")
+	changesFile := createFile(t, changesDir, "thing-removed.json")
+
+	defer os.RemoveAll(tmpDir)
+	writeDataToFile(t, []byte(`{"removed":["that thing"]}`), changesFile)
+	writeDataToFile(t, []byte(changelogContent), changelogFile)
+
+	stdoutFile := createTempFile(t, os.TempDir(), "test-cli-preview-stdout")
+	defer os.Remove(stdoutFile.Name())
+
+	stderrFile := createTempFile(t, os.TempDir(), "test-cli-preview-stderr")
+	defer os.Remove(stderrFile.Name())
+
+	//nolint:gosec // this is a test package so G204 doesn't really matter here.
+	cmd := exec.Command(
+		os.Args[0],
+		"-test.run=^TestCliPreview$",
+		"preview",
+		"--skip-version-links",
+		"--dir",
+		changesDir,
+		"--changelog",
+		changelogFile.Name(),
+		"--bump",
+		"minor",
+	)
+
+	cmd.Stdout = stdoutFile
+	cmd.Stderr = stderrFile
+
+	cmd.Env = append(os.Environ(), "TEST_CLI_PREVIEW=1")
+	err = cmd.Run()
+
+	assert.NoError(t, err)
+
+	stdoutData, err := os.ReadFile(stdoutFile.Name())
+	assert.NoError(t, err)
+
+	stderrData, err := os.ReadFile(stderrFile.Name())
+	assert.NoError(t, err)
+
+	assert.NotEmpty(t, string(stdoutData))
+	assert.Empty(t, string(stderrData))
+
+	assert.Contains(t, string(stdoutData), "### Removed\n\n- that thing\n")
 }

@@ -266,60 +266,61 @@ func TestCLIHelp(t *testing.T) {
 	}
 }
 
-func TestCLIGenerateWithInvalidFlags(t *testing.T) {
+func TestCLIWithInvalidDirFlag(t *testing.T) {
 	t.Parallel()
 
-	if os.Getenv("TEST_CLI_GENERATE_INVALID_FLAGS") != "" {
+	if os.Getenv("TEST_CLI_INVALID_DIR_FLAG") != "" {
 		conflictless.CLI()
 
 		return
 	}
 
-	stdoutFile := createTempFile(t, os.TempDir(), "test-cli-generate-with-invalid-flags-stdout")
-	defer os.Remove(stdoutFile.Name())
-
-	stderrFile := createTempFile(t, os.TempDir(), "test-cli-generate-with-invalid-flags-stderr")
-	defer os.Remove(stderrFile.Name())
-
-	//nolint:gosec // this is a test package so G204 doesn't really matter here.
-	cmd := exec.Command(
-		os.Args[0],
-		"-test.run=^TestCLIGenerateWithInvalidFlags$",
+	for _, command := range []string{
+		"check",
 		"generate",
-		"--dir",
-		"rhymenocerous",
-		"--changelog",
-		"HIPPOPOTAMUS.md",
-		"--bump",
-		"steve",
-	)
+		"preview",
+	} {
+		t.Run("invalid_dir_flag_with_command_"+command, func(t *testing.T) {
+			t.Parallel()
 
-	cmd.Stdout = stdoutFile
-	cmd.Stderr = stderrFile
+			stdoutFile := createTempFile(t, os.TempDir(), "test-cli-generate-with-invalid-flags-stdout")
+			defer os.Remove(stdoutFile.Name())
 
-	cmd.Env = append(os.Environ(), "TEST_CLI_GENERATE_INVALID_FLAGS=1")
-	err := cmd.Run()
+			stderrFile := createTempFile(t, os.TempDir(), "test-cli-generate-with-invalid-flags-stderr")
+			defer os.Remove(stderrFile.Name())
 
-	assert.Error(t, err)
+			//nolint:gosec // this is a test package so G204 doesn't really matter here.
+			cmd := exec.Command(
+				os.Args[0],
+				"-test.run=^TestCLIWithInvalidDirFlag$",
+				command,
+				"--dir",
+				"rhymenocerous",
+			)
 
-	assert.IsType(t, new(exec.ExitError), err)
+			cmd.Stdout = stdoutFile
+			cmd.Stderr = stderrFile
 
-	exitErr := new(*exec.ExitError)
-	errors.As(err, exitErr)
+			cmd.Env = append(os.Environ(), "TEST_CLI_INVALID_DIR_FLAG=1")
+			err := cmd.Run()
 
-	expectedCode := 2
-	exitCode := (*exitErr).ExitCode()
+			assert.Error(t, err)
+			assert.IsType(t, new(exec.ExitError), err)
 
-	assert.Equal(t, expectedCode, exitCode, "process exited with %d, want exit status %d", expectedCode, exitCode)
+			exitErr := new(*exec.ExitError)
+			errors.As(err, exitErr)
+			exitCode := (*exitErr).ExitCode()
+			expectedCode := 2
+			assert.Equal(t, expectedCode, exitCode, "process exited with %d, want exit status %d", expectedCode, exitCode)
 
-	stdoutData, err := os.ReadFile(stdoutFile.Name())
-	assert.NoError(t, err)
-
-	stderrData, err := os.ReadFile(stderrFile.Name())
-	assert.NoError(t, err)
-
-	assert.Empty(t, string(stdoutData))
-	assert.NotEmpty(t, string(stderrData))
+			stdoutData, err := os.ReadFile(stdoutFile.Name())
+			assert.NoError(t, err)
+			stderrData, err := os.ReadFile(stderrFile.Name())
+			assert.NoError(t, err)
+			assert.Empty(t, string(stdoutData))
+			assert.NotEmpty(t, string(stderrData))
+		})
+	}
 }
 
 func TestCLICreateWithInvalidFlags(t *testing.T) {

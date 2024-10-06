@@ -60,7 +60,7 @@ The commands are:
         create          Creates a new change-file
         generate        Generates a version entry to changelog file
         help            Prints this help message
-        preview         Prints a preview of unreleased changes
+        preview         Prints a preview of the next changelog entry
 
 Use "conflictless help <topic>" for more information about that topic.
 `
@@ -111,6 +111,21 @@ The flags are:
 	)
 }
 
+func usageTextForPreview() string {
+	return fmt.Sprintf(`Usage: conflictless preview [flags]
+
+The flags are:
+
+%s
+%s
+%s
+`,
+		flagDescriptionBump,
+		flagDescriptionDir,
+		flagDescriptionSkipVersionLinks,
+	)
+}
+
 func usage() {
 	fmt.Fprint(os.Stdout, usageText())
 }
@@ -141,4 +156,12 @@ func usageGenerate() {
 
 func usageGenerateOnError() {
 	fmt.Fprint(os.Stderr, usageTextForGenerate())
+}
+
+func usagePreview() {
+	fmt.Fprint(os.Stdout, usageTextForPreview())
+}
+
+func usagePreviewOnError() {
+	fmt.Fprint(os.Stderr, usageTextForPreview())
 }

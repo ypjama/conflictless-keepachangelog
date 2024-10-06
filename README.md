@@ -59,7 +59,7 @@ The commands are:
         create          Creates a new change-file
         generate        Generates a version entry to changelog file
         help            Prints this help message
-        preview         Prints a preview of unreleased changes
+        preview         Prints a preview of the next changelog entry
 
 Use "conflictless help <topic>" for more information about that topic.
 ```

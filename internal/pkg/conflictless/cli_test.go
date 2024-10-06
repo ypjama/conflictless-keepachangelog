@@ -24,12 +24,12 @@ func TestParseCLIFlags(t *testing.T) {
 
 	originalArgs := os.Args
 
-	dir := "directory-for-cli-parse-test"
 	bump := "major"
 	changelog := "changelog-for-cli-parse-test.md"
+	dir := "directory-for-cli-parse-test"
 	format := "json"
-	types := "added,changed,removed"
 	name := "foo-bar-baz"
+	types := "added,changed,removed"
 
 	for _, testCase := range []parseCliFlagsTestCase{
 		{

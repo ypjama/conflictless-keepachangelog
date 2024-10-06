@@ -59,59 +59,9 @@ The commands are:
         create          Creates a new change-file
         generate        Generates a version entry to changelog file
         help            Prints this help message
+        preview         Prints a preview of the next changelog entry
 
 Use "conflictless help <topic>" for more information about that topic.
-```
-
-`conflictless help check`
-
-``` txt
-Usage: conflictless check [flags]
-
-The flags are:
-
-        -d, --dir
-                Directory where to look for change-files (default: changes)
-```
-
-`conflictless help create`
-
-```txt
-Usage: conflictless create [flags]
-
-The flags are:
-
-        -d, --dir
-                Directory where the change-file should be created (default: changes)
-        -f, --format
-                File format and extension yml/yaml/json for the change-file (default: yml)
-        -t, --types
-                Types of changes you want for the change-file (default: changed)
-
-                Multiple values can be given by separating values with commas.
-                Example: '--format added,changed,deprecated,removed,fixed,security'.
-        -n, --name
-                Name for the change-file without file extension
-
-                If this flag is not given the name will be derived from the name of the
-                current git branch you're on.
-```
-
-`conflictless help generate`
-
-``` txt
-Usage: conflictless generate [flags]
-
-The flags are:
-
-        -b, --bump
-                Bump version patch/minor/major (default: minor)
-        -c, --changelog
-                Changelog file (default: CHANGELOG.md)
-        -d, --dir
-                Directory where to look for change-files (default: changes)
-        -s, --skip-version-links
-                Skip version links in changelog file (default: false)
 ```
 
 ## Suggested workflow

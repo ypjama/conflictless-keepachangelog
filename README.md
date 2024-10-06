@@ -63,57 +63,6 @@ The commands are:
 Use "conflictless help <topic>" for more information about that topic.
 ```
 
-`conflictless help check`
-
-``` txt
-Usage: conflictless check [flags]
-
-The flags are:
-
-        -d, --dir
-                Directory where to look for change-files (default: changes)
-```
-
-`conflictless help create`
-
-```txt
-Usage: conflictless create [flags]
-
-The flags are:
-
-        -d, --dir
-                Directory where the change-file should be created (default: changes)
-        -f, --format
-                File format and extension yml/yaml/json for the change-file (default: yml)
-        -t, --types
-                Types of changes you want for the change-file (default: changed)
-
-                Multiple values can be given by separating values with commas.
-                Example: '--format added,changed,deprecated,removed,fixed,security'.
-        -n, --name
-                Name for the change-file without file extension
-
-                If this flag is not given the name will be derived from the name of the
-                current git branch you're on.
-```
-
-`conflictless help generate`
-
-``` txt
-Usage: conflictless generate [flags]
-
-The flags are:
-
-        -b, --bump
-                Bump version patch/minor/major (default: minor)
-        -c, --changelog
-                Changelog file (default: CHANGELOG.md)
-        -d, --dir
-                Directory where to look for change-files (default: changes)
-        -s, --skip-version-links
-                Skip version links in changelog file (default: false)
-```
-
 ## Suggested workflow
 
 Each project should have a directory for storing unreleased changes, e.g. a directory named `changes`. In this directory developers can create _YAML_ or _JSON_ files for each merge/pull request. The filename can be freely chosen and can be derived from the branch name, e.g. `fix-broken-dependency.yml`. This way each merge/pull request would have its own `changes` file and there would not be any merge conflicts regarding the changelog.

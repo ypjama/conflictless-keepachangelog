@@ -8,7 +8,7 @@ import (
 	"github.com/ypjama/conflictless-keepachangelog/internal/pkg/conflictless"
 )
 
-func TestGenerate(t *testing.T) {
+func TestPreview(t *testing.T) {
 	t.Parallel()
 
 	changesDir, err := os.MkdirTemp(os.TempDir(), "changes")
@@ -16,20 +16,20 @@ func TestGenerate(t *testing.T) {
 
 	defer os.RemoveAll(changesDir)
 
-	changesFile := createFile(t, changesDir, "test-generate.json")
+	changesFile := createFile(t, changesDir, "test-preview.json")
 	defer os.Remove(changesFile.Name())
 
-	changelogFile := createTempFile(t, os.TempDir(), "test-generate-CHANGELOG.md")
+	changelogFile := createTempFile(t, os.TempDir(), "test-preview-CHANGELOG.md")
 	defer os.Remove(changelogFile.Name())
 
-	gitConfigFile := createTempFile(t, os.TempDir(), "test-generate.gitconfig")
+	gitConfigFile := createTempFile(t, os.TempDir(), "test-preview.gitconfig")
 	defer os.Remove(gitConfigFile.Name())
 
-	writeDataToFile(t, []byte(`{"fixed":["foo"]}`), changesFile)
+	writeDataToFile(t, []byte(`{"added":["New major feature"]}`), changesFile)
 	writeDataToFile(t, []byte(changelogContent), changelogFile)
 	writeDataToFile(t, []byte(gitConfig), gitConfigFile)
 
-	flagValueBumpPatch := "patch"
+	flagValueBumpPatch := "major"
 
 	cfg := new(conflictless.Config)
 	cfg.Flags.Directory = &changesDir
@@ -38,10 +38,13 @@ func TestGenerate(t *testing.T) {
 	cfg.ChangelogFile = changelogFile.Name()
 	cfg.RepositoryConfigFile = gitConfigFile.Name()
 
-	conflictless.Generate(cfg)
+	startStdoutCapture(t)
 
-	actual, err := os.ReadFile(changelogFile.Name())
-	assert.NoError(t, err)
-	assert.Contains(t, string(actual), "## [Unreleased]")
-	assert.Contains(t, string(actual), "## [1.0.2]")
+	conflictless.Preview(cfg)
+
+	output := stopStdoutCapture(t)
+
+	assert.Contains(t, output, "```md\n")
+	assert.Contains(t, output, "## [2.0.0]")
+	assert.Contains(t, output, "### Added\n\n- New major feature\n")
 }

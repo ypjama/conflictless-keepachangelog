@@ -113,6 +113,7 @@ func TestCLIHelp(t *testing.T) {
 		{"help check", []string{"help", "check"}, false},
 		{"help create", []string{"help", "create"}, false},
 		{"help generate", []string{"help", "generate"}, false},
+		{"help preview", []string{"help", "preview"}, false},
 		{"help unknown", []string{"help", "unknown"}, true},
 	} {
 		t.Run(testCase.description, func(t *testing.T) {

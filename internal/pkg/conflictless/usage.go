@@ -49,6 +49,10 @@ const (
 		"-s, --skip-version-links\n" +
 		flagDescriptionIndentation +
 		"Skip version links in changelog file (default: false)"
+	flagDescriptionUseVPrefixInVersionLinks = flagIndentation +
+		"-p, --use-v-prefix-in-version-links\n" +
+		flagDescriptionIndentation +
+		"Use 'v' prefix in version links in changelog file (default: false)"
 )
 
 func usageText() string {
@@ -75,10 +79,12 @@ The flags are:
 %s
 %s
 %s
+%s
 `,
 		flagDescriptionBump,
 		flagDescriptionChangelog,
 		flagDescriptionDir,
+		flagDescriptionUseVPrefixInVersionLinks,
 		flagDescriptionSkipVersionLinks,
 	)
 }
@@ -120,10 +126,12 @@ The flags are:
 %s
 %s
 %s
+%s
 `,
 		flagDescriptionBump,
 		flagDescriptionChangelog,
 		flagDescriptionDir,
+		flagDescriptionUseVPrefixInVersionLinks,
 		flagDescriptionSkipVersionLinks,
 	)
 }

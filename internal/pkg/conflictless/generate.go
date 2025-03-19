@@ -45,7 +45,7 @@ func DataToMarkdown(cfg *Config, data *schema.Data) string {
 	var sectionLink string
 
 	if !cfg.Flags.SkipVersionLinks {
-		sectionLink = SectionLink(ParseRepositoryURL(cfg), sectionName)
+		sectionLink = SectionLink(ParseRepositoryURL(cfg), sectionName, cfg.Flags.UseVPrefixInVersionLinks)
 	}
 
 	out += fmt.Sprintf("## ["+sectionName+"] - %s%s%s", dateStr, eol, eol)

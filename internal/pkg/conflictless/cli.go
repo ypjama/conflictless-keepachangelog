@@ -28,14 +28,15 @@ const (
 func CLI() {
 	cfg := Config{
 		Flags: FlagCollection{
-			Bump:             new(string),
-			ChangeFileFormat: new(string),
-			ChangeFileName:   new(string),
-			ChangelogFile:    new(string),
-			ChangeTypesCsv:   new(string),
-			Command:          "",
-			Directory:        new(string),
-			SkipVersionLinks: false,
+			Bump:                     new(string),
+			ChangeFileFormat:         new(string),
+			ChangeFileName:           new(string),
+			ChangelogFile:            new(string),
+			ChangeTypesCsv:           new(string),
+			Command:                  "",
+			Directory:                new(string),
+			SkipVersionLinks:         false,
+			UseVPrefixInVersionLinks: false,
 		},
 		Bump:                 defaultBump,
 		Changelog:            nil,
@@ -106,6 +107,7 @@ func parseCLIFlags(cfg *Config) {
 		defineChangeLogFlags(cfg, cmd)
 		defineDirFlags(cfg, cmd)
 		defineSkipFlags(cfg, cmd)
+		defineVPrefixFlags(cfg, cmd)
 	case commandCheck:
 		cmd = flag.NewFlagSet(commandCheck, flag.ExitOnError)
 		cmd.Usage = usageCheckOnError
@@ -127,6 +129,7 @@ func parseCLIFlags(cfg *Config) {
 		defineChangeLogFlags(cfg, cmd)
 		defineDirFlags(cfg, cmd)
 		defineSkipFlags(cfg, cmd)
+		defineVPrefixFlags(cfg, cmd)
 	}
 
 	if cmd != nil {
@@ -200,4 +203,9 @@ func defineChangeFileNameFlags(cfg *Config, flagset *flag.FlagSet) {
 func defineSkipFlags(cfg *Config, flagset *flag.FlagSet) {
 	flagset.BoolVar(&cfg.Flags.SkipVersionLinks, "skip-version-links", false, "")
 	flagset.BoolVar(&cfg.Flags.SkipVersionLinks, "s", false, "")
+}
+
+func defineVPrefixFlags(cfg *Config, flagset *flag.FlagSet) {
+	flagset.BoolVar(&cfg.Flags.UseVPrefixInVersionLinks, "use-v-prefix-in-version-links", false, "")
+	flagset.BoolVar(&cfg.Flags.UseVPrefixInVersionLinks, "p", false, "")
 }

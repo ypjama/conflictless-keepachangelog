@@ -7,14 +7,15 @@ import (
 
 // FlagCollection is a collection of flags.
 type FlagCollection struct {
-	Bump             *string
-	ChangeFileFormat *string
-	ChangeFileName   *string
-	ChangelogFile    *string
-	ChangeTypesCsv   *string
-	Command          string
-	Directory        *string
-	SkipVersionLinks bool
+	Bump                     *string
+	ChangeFileFormat         *string
+	ChangeFileName           *string
+	ChangelogFile            *string
+	ChangeTypesCsv           *string
+	Command                  string
+	Directory                *string
+	SkipVersionLinks         bool
+	UseVPrefixInVersionLinks bool
 }
 
 // Config is the configuration for the CLI.

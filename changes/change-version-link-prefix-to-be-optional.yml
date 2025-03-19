@@ -1,0 +1,3 @@
+---
+changed:
+  - "Change version link prefix to be optional and off by default"

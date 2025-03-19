@@ -6,17 +6,22 @@ import (
 	"strings"
 )
 
-func SectionLink(baseURL string, sectionName string) string {
+func SectionLink(baseURL, sectionName string, useVPrefixInLinks bool) string {
 	if baseURL == "" {
 		return ""
 	}
 
+	prefix := ""
+	if useVPrefixInLinks {
+		prefix = "v"
+	}
+
 	if strings.Contains(baseURL, "github.com") {
-		return fmt.Sprintf("[%s]: %s/releases/tag/v%s", sectionName, baseURL, sectionName)
+		return fmt.Sprintf("[%s]: %s/releases/tag/%s%s", sectionName, baseURL, prefix, sectionName)
 	}
 
 	if strings.Contains(baseURL, "gitlab.") {
-		return fmt.Sprintf("[%s]: %s/-/releases/v%s", sectionName, baseURL, sectionName)
+		return fmt.Sprintf("[%s]: %s/-/releases/%s%s", sectionName, baseURL, prefix, sectionName)
 	}
 
 	log.Print("Unknown repository host, skipping section link generation")

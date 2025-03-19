@@ -1,0 +1,3 @@
+---
+fixed:
+  - "Wrong flag in usage example of create --types"

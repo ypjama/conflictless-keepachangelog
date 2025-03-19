@@ -27,7 +27,7 @@ const (
 		flagDescriptionIndentation +
 		"Multiple values can be given by separating values with commas.\n" +
 		flagDescriptionIndentation +
-		"Example: '--format added,changed,deprecated,removed,fixed,security'." +
+		"Example: '--types added,changed,deprecated,removed,fixed,security'." +
 		flagDescriptionIndentation
 	flagDescriptionNameForCreate = flagIndentation +
 		"-n, --name\n" +
